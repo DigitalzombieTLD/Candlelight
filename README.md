@@ -1,4 +1,4 @@
-The Long Dark - TLD StickPick mod - v1.1.2 by Digitalzombie
+The Long Dark - TLD Candlelight - v1.0.0 by Digitalzombie
 ===========================================================
 
 How to install:
@@ -11,6 +11,10 @@ This creates a new folder named "Mods" in your TLD folder.
 
 3. In addition you need to install:
 - ModSettings
+- ModComponent
+- CraftingRevision
+- AlternativeActionUtilities
+- GearSpawner
 
 You can find everything on: https://xpazeman.com/tld-mod-list/
 
@@ -22,26 +26,25 @@ You can find everything on: https://xpazeman.com/tld-mod-list/
 What does it do?
 =================
 
-Picks up sticks and stones in a radius around you.
+Adds candles and materials for crafting candles
 
-You can configure the size of the radius, 
-the calorie penalty for picking up items,
-and choose if only sticks / stones or both get picked up.
+New items:
 
-In addition you can put a "StickPickCustomList.txt" file in your Mods folder,
-to add custom items that get picked up. One item per line, no spaces!
+GEAR_FatRaw -> Can be obtained by harvesting hide/pelt from carcasses, needs to be boiled to get:
+GEAR_Wax -> 4 pieces of raw wax + 1 cloth can be crafted into: 
+GEAR_Candle -> Burns for about 8 hours
 
-eg.
-GEAR_Arrow
-GEAR_ArrowHead
-GEAR_ArrowShaft
+Everything can spawn as loot. 
 
-Use the following list:
-https://the-long-dark-modding.fandom.com/wiki/Gear_Name
+Candles are very sensible to wind and turn off easily. 
 
-Note: 
-Not all items from that list are getting picked up. Only items that are actually on the "GEAR" object layer (17).
-Please report any items that don't work.
+Turn on by holding a burning match/torch and click the candle with the left or middle (AlternativeAction setting) mouse button.
+Turn on by holding an unlit match and hold left or middle (AlternativeAction setting) mouse button while targetting the candle.
+Turn off by left or middle (AlternativeAction setting) mouse button.
+
+Flickering effect can be disabled in the mod settings. There are additional options for customizations.
+
+Candle gives +2°C warmth while burning. Crafting and reading is possible.
 
 ===========================
 ===========================
@@ -63,8 +66,4 @@ https://discord.gg/AqpW9TjUfr
 
 Changelog:
 ==========
-1.1.2	- Fixed issues with AutoUpdate in release
-1.1.0 	- Added custom item list
-	- Higher radius setting
-		    
 1.0.0 	- First release
