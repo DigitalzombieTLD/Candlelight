@@ -1,32 +1,8 @@
 ﻿using System;
-using MelonLoader;
-using Harmony;
 using UnityEngine;
-using System.Reflection;
-using System.Xml.XPath;
-using System.Globalization;
-using UnhollowerRuntimeLib;
-using ModSettings;
-using System.Collections;
-using System.IO;
-using System.Collections.Generic;
 
 namespace Candlelight
 {
-	/*[HarmonyLib.HarmonyPatch(typeof(PlayerManager), "ItemInHandsPlaceable")]
-	public class itemInHandPLacementPatcher
-	{
-		public static void Postfix(ref PlayerManager __instance, ref bool __result)
-		{
-			MelonLogger.Msg("postfix fired - original result" + __result);
-
-			if (GameManager.GetPlayerInVehicle().IsInside())
-			{
-				__result = true;
-			}
-		}
-	}*/
-
 	[HarmonyLib.HarmonyPatch(typeof(GearItem), "Awake")]
 	public class candleComponentPatcher
 	{
@@ -126,25 +102,6 @@ namespace Candlelight
 		}
 	}
 
-	/*[HarmonyLib.HarmonyPatch(typeof(PlayerManager), "EnterInspectGearMode")]
-	public class candleTurnOffOnInspect
-	{
-		public static bool Prefix(ref GearItem item)
-		{
-			if (item.name.Contains("GEAR_Candle"))
-			{
-				CandleItem candleComponent = item.gameObject.GetComponent<CandleItem>();
-
-				if (candleComponent)
-				{
-					candleComponent.fakeOff();
-				}
-			}
-
-			return true;
-		}
-	}*/
-
 	[HarmonyLib.HarmonyPatch(typeof(GearItem), "Drop")]
 	public class candleTurnOffOnDrop
 	{
@@ -207,7 +164,7 @@ namespace Candlelight
 	}
 
 	[HarmonyLib.HarmonyPatch(typeof(PlayerManager), "InteractiveObjectsProcessInteraction")]
-	public class ExecuteInteractActionCardGame
+	public class ExecuteInteractActionCandle
 	{
 		public static bool Prefix(ref PlayerManager __instance)
 		{
@@ -224,20 +181,4 @@ namespace Candlelight
 			return true;
 		}
 	}
-
-	/*[HarmonyLib.HarmonyPatch(typeof(PlayerAnimation), "OnAnimationEvent_Generic_IgniteComplete")]
-	public class onAfterMatchIgnition
-	{
-		private static void Postfix(ref PlayerAnimation __instance)
-		{
-			MelonLogger.Msg("ignite complete!");
-
-			if (CandleAction.currentPlayerManager.m_InteractiveObjectUnderCrosshair != null && CandleAction.currentPlayerManager.m_InteractiveObjectUnderCrosshair.name.Contains("GEAR_Candle"))
-			{
-				CandleItem candleComponent = CandleAction.currentPlayerManager.m_InteractiveObjectUnderCrosshair.gameObject.GetComponent<CandleItem>();
-
-				candleComponent.turnOn();
-			}
-		}
-	}*/
 }
