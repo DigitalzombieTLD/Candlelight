@@ -1,4 +1,4 @@
-The Long Dark - TLD Candlelight - v1.0.0 by Digitalzombie
+The Long Dark - TLD Candlelight - v1.2.0 by Digitalzombie
 ===========================================================
 
 How to install:
@@ -30,15 +30,16 @@ Adds candles and materials for crafting candles
 
 New items:
 
+GEAR_Wick -> 1 cloth = 4 wicks
 GEAR_FatRaw -> Can be obtained by harvesting hide/pelt from carcasses, needs to be boiled to get:
-GEAR_Wax -> 4 pieces of raw wax + 1 cloth can be crafted into: 
+GEAR_Wax -> 4 pieces of tallow + 1 wick can be crafted into: 
 GEAR_Candle -> Burns for about 8 hours
 
 Everything can spawn as loot. 
 
 Candles are very sensible to wind and turn off easily. 
 
-Turn on by holding a burning match/torch and click the candle with the left or middle (AlternativeAction setting) mouse button.
+Turn on by holding a burning match/flare/torch and click the candle with the left or middle (AlternativeAction setting) mouse button.
 Turn on by holding an unlit match and hold left or middle (AlternativeAction setting) mouse button while targetting the candle.
 Turn off by left or middle (AlternativeAction setting) mouse button.
 
@@ -66,4 +67,15 @@ https://discord.gg/AqpW9TjUfr
 
 Changelog:
 ==========
+Changelog:
+==========
+1.2.0
+- Fixed bug; candles in inventory don't count as lit lightsource anymore
+- Renamed "wax" to "tallow"
+- Torch can now be used to light the candles
+- Unlit candles are now always displaying inspect view
+- Lit candles are always turned off on primary interaction
+- Fat and wax/tallow now stackable
+- Added crafting of wicks! 1 cloth = 4 wicks
+
 1.0.0 	- First release
