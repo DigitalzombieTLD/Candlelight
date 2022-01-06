@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MelonLoader;
+using System;
 using UnityEngine;
 
 namespace Candlelight
@@ -77,28 +78,58 @@ namespace Candlelight
 			{
 				if (__instance.m_BeenInPlayerInventory)
 				{
-					__result = true;
+					CandleItem thisCandle = __instance.gameObject.GetComponent<CandleItem>();
+
+					if (thisCandle.isLit)
+					{
+						__result = true;
+					}
 				}	
 			}
 		}
 	}
 
+	
 	[HarmonyLib.HarmonyPatch(typeof(PlayerManager), "ProcessPickupItemInteraction")]
-	public class candleTurnOffOnStow
+	public class candleIdontEvenCareAnymore
 	{
 		public static bool Prefix(ref GearItem item, ref bool forceEquip, ref bool skipAudio)
 		{
 			if (item.name.Contains("GEAR_Candle"))
-			{
+			{			
 				CandleItem candleComponent = item.gameObject.GetComponent<CandleItem>();
-
-				if (candleComponent)
+				
+				if (candleComponent.isLit)
 				{
 					candleComponent.turnOff();
+					return false;
+				}
+				else
+				{
+					item.m_BeenInPlayerInventory = false;
 				}
 			}
 
 			return true;
+		}
+	}
+
+	//GearItem AddItemToPlayerInventory(GearItem gi, bool trackItemLooted = true, bool enableNotificationFlag = false)
+
+	[HarmonyLib.HarmonyPatch(typeof(PlayerManager), "AddItemToPlayerInventory")]
+	public class candleTurnOffOnStow
+	{
+		public static void Prefix(ref PlayerManager __instance, ref GearItem gi, ref bool trackItemLooted, ref bool enableNotificationFlag)
+		{
+			if (gi.name.Contains("GEAR_Candle"))
+			{
+				CandleItem candleComponent = gi.gameObject.GetComponent<CandleItem>();
+
+				if (candleComponent.isLit)
+				{
+					candleComponent.turnOff();					
+				}
+			}
 		}
 	}
 
@@ -168,15 +199,19 @@ namespace Candlelight
 	{
 		public static bool Prefix(ref PlayerManager __instance)
 		{
-			if (__instance.m_InteractiveObjectUnderCrosshair != null && __instance.m_InteractiveObjectUnderCrosshair.name.Contains("GEAR_Candle") && __instance.m_ItemInHands)
+			if (__instance.m_InteractiveObjectUnderCrosshair != null && __instance.m_InteractiveObjectUnderCrosshair.name.Contains("GEAR_Candle"))
 			{
 				CandleItem thisCandle = __instance.m_InteractiveObjectUnderCrosshair.gameObject.GetComponent<CandleItem>();
 
-				if(__instance.m_ItemInHands.m_MatchesItem || __instance.m_ItemInHands.m_FlareItem)
+				if(__instance.m_ItemInHands)
 				{
 					CandleAction.ExecuteCustomPrimaryAction(thisCandle);
 					return false;
-				}			
+				}
+				else
+				{
+					return true;
+				}
 			}       
 			return true;
 		}

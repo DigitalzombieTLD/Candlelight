@@ -31,23 +31,23 @@ namespace Candlelight
 		}
 
 		public static void ExecuteCustomPrimaryAction(CandleItem candleItem)
-		{		
-			if (currentPlayerManager.m_ItemInHands)
+		{
+			if (candleItem.isLit)
 			{
-				if(candleItem.isLit)
-				{
-					candleItem.turnOff();
-					return;
-				}
+				candleItem.turnOff();
+				return;
+			}
 
-				if (currentPlayerManager.m_ItemInHands.m_MatchesItem || currentPlayerManager.m_ItemInHands.m_FlareItem)
+			if (currentPlayerManager.m_ItemInHands)
+			{				
+				if (currentPlayerManager.m_ItemInHands.m_MatchesItem)
 				{
-					if ((currentPlayerManager.m_ItemInHands.IsLitMatch() || currentPlayerManager.m_ItemInHands.IsLitFlare()))
+					if (currentPlayerManager.m_ItemInHands.IsLitMatch())
 					{
 						candleItem.turnOn();
 						return;
 					}
-					else if (!currentPlayerManager.m_ItemInHands.IsLitMatch() && !currentPlayerManager.m_ItemInHands.m_FlareItem && !candleItem.isLit)
+					else
 					{
 						currentPlayerManager.m_ItemInHands.m_MatchesItem.IgniteAfterDelay();
 						MelonCoroutines.Start(waitForMatchIgnition(candleItem));
@@ -55,11 +55,26 @@ namespace Candlelight
 						return;
 					}
 				}
-			}
-
-			if (candleItem.isLit)
-			{
-				candleItem.turnOff();
+				else if(currentPlayerManager.m_ItemInHands.m_FlareItem)
+				{
+					if (currentPlayerManager.m_ItemInHands.IsLitFlare())
+					{
+						candleItem.turnOn();
+						return;
+					}
+				}
+				else if(currentPlayerManager.m_ItemInHands.m_TorchItem)
+				{
+					if (currentPlayerManager.m_ItemInHands.IsLitTorch())
+					{
+						candleItem.turnOn();
+						return;
+					}
+				}
+				else
+				{
+					candleItem.turnOff();
+				}
 			}
 		}
 
@@ -82,3 +97,4 @@ namespace Candlelight
 		}
 	}
 }
+ 

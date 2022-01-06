@@ -275,7 +275,7 @@ namespace Candlelight
 				if (thisGearItem.m_CurrentHP < 0.1f)
 				{
 					GameAudioManager.PlayGUIError();
-					HUDMessage.AddMessage("The candle is completely burned down", false, false);
+					HUDMessage.AddMessage("The candle is completely burned down", true, true);
 					turnOff();
 					return false;
 				}
@@ -283,7 +283,7 @@ namespace Candlelight
 				if (GameManager.GetWindComponent().TooWindyForPlayerAction(windSpeedExtinguish) && !GameManager.GetWindComponent().IsPositionOccludedFromWind(thisGearItem.transform.position))
 				{
 					GameAudioManager.PlayGUIError();
-					HUDMessage.AddMessage("It is too windy to light the candle", false, false);
+					HUDMessage.AddMessage("It is too windy to light the candle", true, true);
 					turnOff();
 					return false;
 				}
@@ -296,6 +296,9 @@ namespace Candlelight
 			bodyMaterialOn();
 
 			candleHeatComponent.TurnOn();
+			
+			//candleLightTrackingComponent.MaybeAdd(true);
+			//candleLightTrackingComponent.EnableLight(true);
 
 			lightSourceMain.color = Candlelight_Main.candleLightColor;
 			flameMaterial.color = Candlelight_Main.candleFlameColor;
@@ -339,7 +342,7 @@ namespace Candlelight
 			lightSourceSecondary.gameObject.SetActive(false);
 			flame.gameObject.SetActive(false);
 			candleHeatComponent.TurnOffImmediate();
-
+			//LightingManager.Remove(candleLightTrackingComponent);
 			bodyMaterialOff();
 			
 			if(isLit)

@@ -7,7 +7,7 @@ using Candlelight;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: MelonInfo(typeof(Candlelight_Main), "Candlelight", "1.0.0", "Digitalzombie", "")]
+[assembly: MelonInfo(typeof(Candlelight_Main), "Candlelight", "1.2.0", "Digitalzombie", "")]
 [assembly: MelonGame("Hinterland", "TheLongDark")]
 [assembly: AssemblyTitle("Candlelight")]
 [assembly: AssemblyDescription("Candlelight")]
