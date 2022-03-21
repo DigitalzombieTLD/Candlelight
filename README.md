@@ -30,10 +30,10 @@ Adds candles and materials for crafting candles
 
 New items:
 
-GEAR_Wick -> 1 cloth = 4 wicks
-GEAR_FatRaw -> Can be obtained by harvesting hide/pelt from carcasses, needs to be boiled to get:
-GEAR_Wax -> 4 pieces of tallow + 1 wick can be crafted into: 
-GEAR_Candle -> Burns for about 8 hours
+- GEAR_Wick -> 1 cloth = 4 wicks
+- GEAR_FatRaw -> Can be obtained by harvesting hide/pelt from carcasses, needs to be boiled to get:
+- GEAR_Wax -> 4 pieces of tallow + 1 wick can be crafted into: 
+- GEAR_Candle -> Burns for about 8 hours
 
 Everything can spawn as loot. 
 
