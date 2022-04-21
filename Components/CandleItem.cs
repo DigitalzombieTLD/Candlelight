@@ -47,7 +47,7 @@ namespace Candlelight
 		public GameObject inspectModelParent;
 
 		public float windSpeedExtinguish = 3f;
-		public float lifeTimeDivisor = 4.5f; // about 8 hours burn time
+		public float lifeTimeDivisor = Settings.options.lifeTimeDivisor; // about 8 hours burn time
 		public string flickerPattern = "mmnmmommommnonmmonqnmmo";
 
 		public bool isLit = false;
@@ -194,8 +194,6 @@ namespace Candlelight
 		{
 			if (isLit)
 			{
-				transformCandle();
-
 				if (thisGearItem.m_InPlayerInventory)
 				{
 					turnOff();
@@ -224,8 +222,11 @@ namespace Candlelight
 				//thisGearItem.m_MaxHP = thisGearItem.m_MaxHP - (todminutes/3);
 				if(thisGearItem.m_CurrentHP > 0)
 				{
-					float todminutes = GameManager.GetTimeOfDayComponent().GetTODMinutes(Time.deltaTime);
-					thisGearItem.m_CurrentHP = thisGearItem.m_CurrentHP - (todminutes/lifeTimeDivisor);
+					if (!Settings.options.isPerma)
+					{
+						float todminutes = GameManager.GetTimeOfDayComponent().GetTODMinutes(Time.deltaTime);
+						thisGearItem.m_CurrentHP = thisGearItem.m_CurrentHP - (todminutes / lifeTimeDivisor);
+					}
 					//MelonLogger.Msg("HP current: " + thisGearItem.m_CurrentHP);
 				}
 				else
