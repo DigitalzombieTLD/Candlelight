@@ -79,6 +79,10 @@ namespace Candlelight
 		[Slider(0, 60)]
 		public int flickerFPS = 10;
 
+		[Name("Random Pattern [EXPERIMENTAL]")]
+		[Description("Experimental feature to randomize the candle's flicker pattern.")]
+		public bool randFlicker = false;
+
 		protected override void OnConfirm()
         {
             base.OnConfirm();

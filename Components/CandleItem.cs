@@ -52,6 +52,8 @@ namespace Candlelight
 
 		public bool isLit = false;
 
+		private const string chars = "mnoq";
+
 		public CandleItem(IntPtr intPtr) : base(intPtr) { }
 
 		
@@ -90,7 +92,20 @@ namespace Candlelight
 			body1Mesh = normalModelParent.transform.Find("Body1").gameObject.GetComponent<MeshRenderer>();
 			body2Mesh = normalModelParent.transform.Find("Body2").gameObject.GetComponent<MeshRenderer>();
 			body3Mesh = normalModelParent.transform.Find("Body3").gameObject.GetComponent<MeshRenderer>();
-						
+					
+			if(Settings.options.randFlicker)
+            {
+                System.Random rand = new System.Random();
+				var charArr = new char[22];
+
+				for(int i = 0; i < charArr.Length; i++)
+                {
+					charArr[i] = chars[rand.Next(chars.Length)];
+                }
+
+				flickerPattern = new string(charArr);
+            }
+
 			bodyMaterial = body0Mesh.material;
 			transformCandle();
 
