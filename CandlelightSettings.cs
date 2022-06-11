@@ -1,12 +1,13 @@
 ﻿using UnityEngine;
 using ModSettings;
+using System.Reflection;
 
 namespace Candlelight
 {
-    internal class CandlelightSettingsMain : JsonModSettings
-    {     
+	internal class CandlelightSettingsMain : JsonModSettings
+	{
 
-		[Section("General")]		
+		[Section("General")]
 
 		[Name("Light intensity")]
 		[Description("Non-Flicker only. Default: 3")]
@@ -17,6 +18,16 @@ namespace Candlelight
 		[Description("Default: 6")]
 		[Slider(0f, 12f)]
 		public float lightRange = 6f;
+
+		[Name("Permanence")]
+		[Description("Enable / Disable candles that don't melt")]
+		public bool isPerma = false;
+
+		
+		[Name("Lifetime Divisor")]
+		[Description("How long it takes for a candle to burn out. Larger number means a candle lasts longer. Default: 4.5 (roughly 8 hours)")]
+		[Slider(1f, 100f)]
+		public float lifeTimeDivisor = 4.5f;
 
 		[Section("Light color")]
 
@@ -68,13 +79,32 @@ namespace Candlelight
 		[Slider(0, 60)]
 		public int flickerFPS = 10;
 
+		[Name("Random Pattern [EXPERIMENTAL]")]
+		[Description("Experimental feature to randomize the candle's flicker pattern.")]
+		public bool randFlicker = false;
+
 		protected override void OnConfirm()
         {
             base.OnConfirm();
 			Candlelight_Main.candleLightColor = new Color(colorLightRed, colorLightGreen, colorLightBlue);
 			Candlelight_Main.candleFlameColor = new Color(colorFlameRed, colorFlameGreen, colorFlameBlue);
 		}
+
+        protected override void OnChange(FieldInfo field, object oldValue, object newValue)
+        {
+			if(field.Name == "isPerma")
+            {
+				RefreshFields();
+            }
+        }
+
+		internal void RefreshFields()
+        {
+			SetFieldVisible("lifeTimeDivisor", !isPerma);
+        }
     }
+
+
 
     internal static class Settings
     {
@@ -87,5 +117,8 @@ namespace Candlelight
 			Candlelight_Main.candleLightColor = new Color(Settings.options.colorLightRed, Settings.options.colorLightGreen, Settings.options.colorLightBlue);
 			Candlelight_Main.candleFlameColor = new Color(Settings.options.colorFlameRed, Settings.options.colorFlameGreen, Settings.options.colorFlameBlue);
 		}
+
+		
     }
 }
+

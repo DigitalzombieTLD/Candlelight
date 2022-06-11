@@ -47,10 +47,12 @@ namespace Candlelight
 		public GameObject inspectModelParent;
 
 		public float windSpeedExtinguish = 3f;
-		public float lifeTimeDivisor = 4.5f; // about 8 hours burn time
+		public float lifeTimeDivisor = Settings.options.lifeTimeDivisor; // about 8 hours burn time
 		public string flickerPattern = "mmnmmommommnonmmonqnmmo";
 
 		public bool isLit = false;
+
+		private const string chars = "mnoq";
 
 		public CandleItem(IntPtr intPtr) : base(intPtr) { }
 
@@ -90,7 +92,20 @@ namespace Candlelight
 			body1Mesh = normalModelParent.transform.Find("Body1").gameObject.GetComponent<MeshRenderer>();
 			body2Mesh = normalModelParent.transform.Find("Body2").gameObject.GetComponent<MeshRenderer>();
 			body3Mesh = normalModelParent.transform.Find("Body3").gameObject.GetComponent<MeshRenderer>();
-						
+					
+			if(Settings.options.randFlicker)
+            {
+                System.Random rand = new System.Random();
+				var charArr = new char[22];
+
+				for(int i = 0; i < charArr.Length; i++)
+                {
+					charArr[i] = chars[rand.Next(chars.Length)];
+                }
+
+				flickerPattern = new string(charArr);
+            }
+
 			bodyMaterial = body0Mesh.material;
 			transformCandle();
 
@@ -194,8 +209,6 @@ namespace Candlelight
 		{
 			if (isLit)
 			{
-				transformCandle();
-
 				if (thisGearItem.m_InPlayerInventory)
 				{
 					turnOff();
@@ -224,8 +237,11 @@ namespace Candlelight
 				//thisGearItem.m_MaxHP = thisGearItem.m_MaxHP - (todminutes/3);
 				if(thisGearItem.m_CurrentHP > 0)
 				{
-					float todminutes = GameManager.GetTimeOfDayComponent().GetTODMinutes(Time.deltaTime);
-					thisGearItem.m_CurrentHP = thisGearItem.m_CurrentHP - (todminutes/lifeTimeDivisor);
+					if (!Settings.options.isPerma)
+					{
+						float todminutes = GameManager.GetTimeOfDayComponent().GetTODMinutes(Time.deltaTime);
+						thisGearItem.m_CurrentHP = thisGearItem.m_CurrentHP - (todminutes / lifeTimeDivisor);
+					}
 					//MelonLogger.Msg("HP current: " + thisGearItem.m_CurrentHP);
 				}
 				else
