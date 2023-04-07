@@ -69,6 +69,9 @@ Changelog:
 ==========
 Changelog:
 ==========
+1.3.0
+- DLC update
+
 1.2.0
 - Fixed bug; candles in inventory don't count as lit lightsource anymore
 - Renamed "wax" to "tallow"
