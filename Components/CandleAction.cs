@@ -3,6 +3,7 @@ using System;
 using MelonLoader;
 using UnityEngine;
 using System.Collections;
+using Il2Cpp;
 
 namespace Candlelight
 {

@@ -1,6 +1,8 @@
 ﻿using MelonLoader;
 using System;
 using UnityEngine;
+using Il2Cpp;
+using UnityEngine.AddressableAssets;
 
 namespace Candlelight
 {
@@ -55,12 +57,14 @@ namespace Candlelight
 				{
 					for(int y = 1; y<= fatReward; y++)
 					{
-						GearItem gearItem = GameManager.GetPlayerManagerComponent().InstantiateItemInPlayerInventory("GEAR_FatRaw", false);					
-						
-						if(!msgAdded)
+                        //GearItem gearItem = GameManager.GetPlayerManagerComponent().InstantiateItemInPlayerInventory("GEAR_FatRaw", false);					
+                        GearItem gearItem = Addressables.LoadAssetAsync<GameObject>("GEAR_FatRaw").WaitForCompletion().GetComponent<GearItem>();
+						GameManager.GetPlayerManagerComponent().InstantiateItemInPlayerInventory(gearItem, 1, -1f, false, false);
+
+                        if (!msgAdded)
 						{
 							msgAdded = true;
-							string message = string.Concat(new object[]	{ gearItem.m_DisplayName,	" (", fatReward, ")"});
+							string message = string.Concat(new object[]	{ gearItem.DisplayName,	" (", fatReward, ")"});
 							GearMessage.AddMessage(gearItem.name, Localization.Get("GAMEPLAY_Harvested"), message, false, true);
 						}
 					}
@@ -199,9 +203,9 @@ namespace Candlelight
 	{
 		public static bool Prefix(ref PlayerManager __instance)
 		{
-			if (__instance.m_InteractiveObjectUnderCrosshair != null && __instance.m_InteractiveObjectUnderCrosshair.name.Contains("GEAR_Candle"))
+			if (__instance.GetInteractiveObjectUnderCrosshairs(10f) != null && __instance.GetInteractiveObjectUnderCrosshairs(10f).name.Contains("GEAR_Candle"))
 			{
-				CandleItem thisCandle = __instance.m_InteractiveObjectUnderCrosshair.gameObject.GetComponent<CandleItem>();
+				CandleItem thisCandle = __instance.GetInteractiveObjectUnderCrosshairs(10f).gameObject.GetComponent<CandleItem>();
 
 				if(__instance.m_ItemInHands)
 				{

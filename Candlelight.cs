@@ -1,20 +1,23 @@
 ﻿using MelonLoader;
 using UnityEngine;
-using UnhollowerRuntimeLib;
+using Il2CppInterop;
+using Il2CppInterop.Runtime.Injection; 
+using System.Collections;
+
 
 namespace Candlelight
 {
-    public class Candlelight_Main : MelonMod
-    {
-		public static Color candleLightColor = new Color(0.72f, 0.46f, 0.25f);
-		public static Color candleFlameColor = new Color(0f, 0f, 0f);
+	public class Candlelight_Main : MelonMod
+	{
+        public static Color candleLightColor = new Color(0.72f, 0.46f, 0.25f);
+        public static Color candleFlameColor = new Color(0f, 0f, 0f);
 
-		public override void OnApplicationStart()
+        public override void OnApplicationStart()
         {
-			ClassInjector.RegisterTypeInIl2Cpp<CandleItem>();
-			ClassInjector.RegisterTypeInIl2Cpp<CandleAction>();
+            ClassInjector.RegisterTypeInIl2Cpp<CandleItem>();
+            ClassInjector.RegisterTypeInIl2Cpp<CandleAction>();
 
-			Candlelight.Settings.OnLoad();
-		}
-	}
+            Candlelight.Settings.OnLoad();
+        }
+    }
 }

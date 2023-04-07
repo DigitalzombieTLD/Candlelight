@@ -2,6 +2,7 @@
 using MelonLoader;
 using UnityEngine;
 using System.Collections;
+using Il2Cpp;
 
 namespace Candlelight
 {
@@ -130,7 +131,7 @@ namespace Candlelight
 		{
 			inspectModelParent.SetActive(false);
 
-			if (currentBodyState != 0 && thisGearItem.m_CurrentHP >= 75)
+			if (currentBodyState != 0 && thisGearItem.CurrentHP >= 75)
 			{
 				body0Mesh.enabled = true;
 				body1Mesh.enabled = false;
@@ -144,7 +145,7 @@ namespace Candlelight
 				currentBodyState = 0;
 				return true;
 			}
-			else if (currentBodyState != 1 && thisGearItem.m_CurrentHP >= 50 && thisGearItem.m_CurrentHP < 75)
+			else if (currentBodyState != 1 && thisGearItem.CurrentHP >= 50 && thisGearItem.CurrentHP < 75)
 			{
 				body0Mesh.enabled = false;
 				body1Mesh.enabled = true;
@@ -158,7 +159,7 @@ namespace Candlelight
 				currentBodyState = 1;
 				return true;
 			}
-			else if (currentBodyState != 2 && thisGearItem.m_CurrentHP >= 25 && thisGearItem.m_CurrentHP < 50)
+			else if (currentBodyState != 2 && thisGearItem.CurrentHP >= 25 && thisGearItem.CurrentHP < 50)
 			{
 				body0Mesh.enabled = false;
 				body1Mesh.enabled = false;
@@ -172,7 +173,7 @@ namespace Candlelight
 				currentBodyState = 2;
 				return true;
 			}
-			else if (currentBodyState != 3 && thisGearItem.m_CurrentHP >= 0 && thisGearItem.m_CurrentHP < 25)
+			else if (currentBodyState != 3 && thisGearItem.CurrentHP >= 0 && thisGearItem.CurrentHP < 25)
 			{
 				body0Mesh.enabled = false;
 				body1Mesh.enabled = false;
@@ -222,15 +223,15 @@ namespace Candlelight
 				}
 				
 				//thisGearItem.m_MaxHP = thisGearItem.m_MaxHP - (todminutes/3);
-				if(thisGearItem.m_CurrentHP > 0)
+				if(thisGearItem.CurrentHP > 0)
 				{
 					float todminutes = GameManager.GetTimeOfDayComponent().GetTODMinutes(Time.deltaTime);
-					thisGearItem.m_CurrentHP = thisGearItem.m_CurrentHP - (todminutes/lifeTimeDivisor);
-					//MelonLogger.Msg("HP current: " + thisGearItem.m_CurrentHP);
+					thisGearItem.CurrentHP = thisGearItem.CurrentHP - (todminutes/lifeTimeDivisor);
+					//MelonLogger.Msg("HP current: " + thisGearItem.CurrentHP);
 				}
 				else
 				{
-					thisGearItem.m_CurrentHP = 0f;
+					thisGearItem.CurrentHP = 0f;
 					turnOff();
 				}
 			}
@@ -260,7 +261,7 @@ namespace Candlelight
 
 		public bool canIgnite()
 		{	
-			if (thisGearItem.m_CurrentHP < 0.1f || (GameManager.GetWindComponent().TooWindyForPlayerAction(windSpeedExtinguish) && !GameManager.GetWindComponent().IsPositionOccludedFromWind(thisGearItem.transform.position)))
+			if (thisGearItem.CurrentHP < 0.1f || (GameManager.GetWindComponent().TooWindyForPlayerAction(windSpeedExtinguish) && !GameManager.GetWindComponent().IsPositionOccludedFromWind(thisGearItem.transform.position)))
 			{				
 				return false;
 			}
@@ -272,7 +273,7 @@ namespace Candlelight
 		{
 			if(!canIgnite())
 			{
-				if (thisGearItem.m_CurrentHP < 0.1f)
+				if (thisGearItem.CurrentHP < 0.1f)
 				{
 					GameAudioManager.PlayGUIError();
 					HUDMessage.AddMessage("The candle is completely burned down", true, true);
