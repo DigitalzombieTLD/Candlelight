@@ -197,27 +197,4 @@ namespace Candlelight
 			return true;
 		}
 	}
-
-	[HarmonyLib.HarmonyPatch(typeof(PlayerManager), "InteractiveObjectsProcessInteraction")]
-	public class ExecuteInteractActionCandle
-	{
-		public static bool Prefix(ref PlayerManager __instance)
-		{
-			if (__instance.GetInteractiveObjectUnderCrosshairs(10f) != null && __instance.GetInteractiveObjectUnderCrosshairs(10f).name.Contains("GEAR_Candle"))
-			{
-				CandleItem thisCandle = __instance.GetInteractiveObjectUnderCrosshairs(10f).gameObject.GetComponent<CandleItem>();
-
-				if(__instance.m_ItemInHands)
-				{
-					CandleAction.ExecuteCustomPrimaryAction(thisCandle);
-					return false;
-				}
-				else
-				{
-					return true;
-				}
-			}       
-			return true;
-		}
-	}
 }

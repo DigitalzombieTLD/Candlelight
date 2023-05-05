@@ -47,9 +47,6 @@
 
     <!--This is the list of assemblies that the mod references. Most of these are unnecessary for normal mods, but are included here for completeness.-->
     <ItemGroup>
-        <Reference Include="AlternativeActionUtilities">
-          <HintPath>G:\Games\Steam\steamapps\common\TheLongDark\Mods\AlternativeActionUtilities.dll</HintPath>
-        </Reference>
         <Reference Include="Il2CppInterop.Common">
           <HintPath>..\..\..\..\Games\Steam\steamapps\common\TheLongDark\MelonLoader\net6\Il2CppInterop.Common.dll</HintPath>
         </Reference>

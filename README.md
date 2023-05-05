@@ -1,4 +1,4 @@
-The Long Dark - TLD Candlelight - v1.2.0 by Digitalzombie
+The Long Dark - TLD Candlelight - v1.3.5 by Digitalzombie
 ===========================================================
 
 How to install:
@@ -13,7 +13,6 @@ This creates a new folder named "Mods" in your TLD folder.
 - ModSettings
 - ModComponent
 - CraftingRevision
-- AlternativeActionUtilities
 - GearSpawner
 
 You can find everything on: https://xpazeman.com/tld-mod-list/
@@ -67,8 +66,19 @@ https://discord.gg/AqpW9TjUfr
 
 Changelog:
 ==========
-Changelog:
-==========
+
+1.3.5
+- Removed AlternativeAction Utilities dependency
+- Added option to assign custom button for lighting/extinguishing candle
+- Added option for unlimited burntime
+- Added more loose spawnpoints
+- Fixed brightness of candle texture in dark places
+- Maybe fixed incompatibility with WeightTweaks
+
+
+1.3.0
+- After DLC update
+
 1.2.0
 - Fixed bug; candles in inventory don't count as lit lightsource anymore
 - Renamed "wax" to "tallow"

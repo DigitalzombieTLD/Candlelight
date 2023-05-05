@@ -6,9 +6,13 @@ namespace Candlelight
     internal class CandlelightSettingsMain : JsonModSettings
     {     
 
-		[Section("General")]		
+		[Section("General")]
 
-		[Name("Light intensity")]
+        [Name("Unlimited burntime")]
+        [Description("Candles won't burn down")]        
+        public bool unlimitedBurntime = false;
+
+        [Name("Light intensity")]
 		[Description("Non-Flicker only. Default: 3")]
 		[Slider(0f, 6f)]
 		public float lightIntensity = 3f;
@@ -18,7 +22,15 @@ namespace Candlelight
 		[Slider(0f, 12f)]
 		public float lightRange = 6f;
 
-		[Section("Light color")]
+        [Name("Interact button")]
+        [Description("Button to ignite / extinguish candle")]
+        public KeyCode interactButton = KeyCode.Mouse2;
+
+        [Name("Alternative interact button")]
+        [Description("Button to ignite / extinguish candle")]
+        public KeyCode interactButton2 = KeyCode.Mouse2;
+
+        [Section("Light color")]
 
 		[Name("Red")]
 		[Description("Default: 0.7")]

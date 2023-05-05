@@ -8,7 +8,11 @@ namespace Candlelight
 {
 	public class CandleItem : MonoBehaviour
 	{
-		public Light lightSourceMain;
+        public CandleItem(IntPtr intPtr) : base(intPtr)
+        {
+        }
+
+        public Light lightSourceMain;
 		public Light lightSourceSecondary;
 		public GearItem thisGearItem;
 		public Material bodyMaterial;
@@ -40,7 +44,7 @@ namespace Candlelight
 
 		public HeatSource candleHeatComponent = null;
 		public LightTracking candleLightTrackingComponent = null;
-		public CandleAction candleActionComponent = null;
+
 		public ParticleSystem smokePuff;
 		public ParticleSystem smokePuff2;
 
@@ -52,8 +56,6 @@ namespace Candlelight
 		public string flickerPattern = "mmnmmommommnonmmonqnmmo";
 
 		public bool isLit = false;
-
-		public CandleItem(IntPtr intPtr) : base(intPtr) { }
 
 		
 		public void Start()
@@ -98,12 +100,7 @@ namespace Candlelight
 			lightSourceMain.intensity = Settings.options.lightIntensity;
 			lightSourceMain.range = Settings.options.lightRange;
 
-
-			if (candleActionComponent == null)
-			{
-				candleActionComponent = thisGearItem.gameObject.AddComponent<CandleAction>();
-			}
-
+						
 			if (candleLightTrackingComponent == null)
 			{
 				candleLightTrackingComponent = lightSourceMain.gameObject.AddComponent<LightTracking>();
@@ -223,6 +220,17 @@ namespace Candlelight
 				}
 				
 				//thisGearItem.m_MaxHP = thisGearItem.m_MaxHP - (todminutes/3);
+
+				if(Settings.options.unlimitedBurntime)
+				{
+					if (thisGearItem.CurrentHP < 5)
+					{
+                        thisGearItem.CurrentHP = 5f;
+                    }
+
+					return;
+                }
+
 				if(thisGearItem.CurrentHP > 0)
 				{
 					float todminutes = GameManager.GetTimeOfDayComponent().GetTODMinutes(Time.deltaTime);
@@ -298,8 +306,8 @@ namespace Candlelight
 
 			candleHeatComponent.TurnOn();
 			
-			//candleLightTrackingComponent.MaybeAdd(true);
-			//candleLightTrackingComponent.EnableLight(true);
+			candleLightTrackingComponent.MaybeAdd(true);
+			candleLightTrackingComponent.EnableLight(true);
 
 			lightSourceMain.color = Candlelight_Main.candleLightColor;
 			flameMaterial.color = Candlelight_Main.candleFlameColor;
