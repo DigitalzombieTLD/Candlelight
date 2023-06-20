@@ -4,6 +4,7 @@ using Il2CppInterop;
 using Il2CppInterop.Runtime.Injection; 
 using System.Collections;
 using Il2Cpp;
+using UnityEngine.Device;
 
 namespace Candlelight
 {
@@ -11,43 +12,62 @@ namespace Candlelight
 	{
         public static Color candleLightColor = new Color(0.72f, 0.46f, 0.25f);
         public static Color candleFlameColor = new Color(0f, 0f, 0f);
+        public int layerMask = 0;
+        public static RaycastHit hit;
 
         public override void OnApplicationStart()
         {
-            ClassInjector.RegisterTypeInIl2Cpp<CandleItem>();
-         
             Candlelight.Settings.OnLoad();
+            layerMask |= 1 << 17; // gear layer
         }
 
         public override void OnUpdate()
         {
             if (InputManager.GetKeyDown(InputManager.m_CurrentContext, Settings.options.interactButton) || InputManager.GetKeyDown(InputManager.m_CurrentContext, Settings.options.interactButton2))
             {
-                PlayerManager currentPlayerManager = GameManager.GetPlayerManagerComponent();
-                GameObject targetObject = currentPlayerManager.GetInteractiveObjectUnderCrosshairs(2.5f);
-
-                if (targetObject != null && targetObject.name.Contains("GEAR_Candle"))
+                if (Physics.Raycast(GameManager.GetMainCamera().transform.position, GameManager.GetMainCamera().transform.TransformDirection(Vector3.forward), out hit, 2.5f, layerMask))
                 {
-                    CandleItem thisCandle = targetObject.GetComponent<CandleItem>();
-
-                    if (thisCandle.isLit)
+                    GameObject hitObject = hit.collider.gameObject;
+                    string hitObjectName = hitObject.name;
+                    
+                    if (hitObjectName == "Body0" || hitObjectName == "Body1" || hitObjectName == "Body2" || hitObjectName == "Body3")
                     {
-                        if(currentPlayerManager.m_ItemInHands.m_TorchItem && !currentPlayerManager.m_ItemInHands.IsLitTorch())
+                        CandleItem thisCandle;
+
+                        if (hitObject.transform.parent.name == "Normal")
                         {
-                            currentPlayerManager.m_ItemInHands.m_TorchItem.Ignite();
+                            thisCandle = hitObject.transform.parent.parent.GetComponent<CandleItem>();
                         }
                         else
                         {
-                            thisCandle.turnOff();
-                        }
-                    }
-                    else
-                    {
-                        if (currentPlayerManager.m_ItemInHands)
+                            return;
+                        }                     
+
+                        if(thisCandle != null)
                         {
-                            if(currentPlayerManager.m_ItemInHands.IsLitMatch() || currentPlayerManager.m_ItemInHands.IsLitFlare() || currentPlayerManager.m_ItemInHands.IsLitTorch())
+        
+                            PlayerManager currentPlayerManager = GameManager.GetPlayerManagerComponent();
+
+                            if (thisCandle.isLit)
+                            {                               
+                                if (currentPlayerManager.m_ItemInHands.m_TorchItem && !currentPlayerManager.m_ItemInHands.IsLitTorch())
+                                {
+                                    currentPlayerManager.m_ItemInHands.m_TorchItem.Ignite();
+                                }
+                                else
+                                {
+                                    thisCandle.turnOff();
+                                }
+                            }
+                            else
                             {
-                                thisCandle.turnOn();
+                                if (currentPlayerManager.m_ItemInHands)
+                                {
+                                    if (currentPlayerManager.m_ItemInHands.IsLitMatch() || currentPlayerManager.m_ItemInHands.IsLitFlare() || currentPlayerManager.m_ItemInHands.IsLitTorch())
+                                    {
+                                        thisCandle.turnOn();
+                                    }
+                                }
                             }
                         }
                     }

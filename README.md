@@ -1,4 +1,4 @@
-The Long Dark - TLD Candlelight - v1.3.5 by Digitalzombie
+The Long Dark - TLD Candlelight - v1.3.8 by Digitalzombie
 ===========================================================
 
 How to install:
@@ -66,6 +66,8 @@ https://discord.gg/AqpW9TjUfr
 
 Changelog:
 ==========
+1.3.8
+- Fixed random errors
 
 1.3.5
 - Removed AlternativeAction Utilities dependency

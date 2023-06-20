@@ -3,7 +3,7 @@
 
     <PropertyGroup>
         <!--This needs to be changed for the mod to compile.-->
-        <TheLongDarkPath>G:\Games\Steam\steamapps\common\TheLongDark</TheLongDarkPath>
+        <TheLongDarkPath>W:/Steam/steamapps/common/TheLongDark</TheLongDarkPath>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -48,10 +48,10 @@
     <!--This is the list of assemblies that the mod references. Most of these are unnecessary for normal mods, but are included here for completeness.-->
     <ItemGroup>
         <Reference Include="Il2CppInterop.Common">
-          <HintPath>..\..\..\..\Games\Steam\steamapps\common\TheLongDark\MelonLoader\net6\Il2CppInterop.Common.dll</HintPath>
+          <HintPath>W:\Steam\steamapps\common\TheLongDark\MelonLoader\net6\Il2CppInterop.Common.dll</HintPath>
         </Reference>
         <Reference Include="Il2CppInterop.Runtime">
-          <HintPath>..\..\..\..\Games\Steam\steamapps\common\TheLongDark\MelonLoader\net6\Il2CppInterop.Runtime.dll</HintPath>
+          <HintPath>W:\Steam\steamapps\common\TheLongDark\MelonLoader\net6\Il2CppInterop.Runtime.dll</HintPath>
         </Reference>
         <Reference Include="MelonLoader" />
         <Reference Include="0Harmony" />
@@ -80,14 +80,14 @@
         <Reference Include="Il2CppTLD.Trial" />
         <Reference Include="Il2CppTLD.UserGeneratedContent" />
         <Reference Include="ModSettings">
-          <HintPath>G:\Games\Steam\steamapps\common\TheLongDark\Mods\ModSettings.dll</HintPath>
+          <HintPath>W:\Steam\steamapps\common\TheLongDark\Mods\ModSettings.dll</HintPath>
         </Reference>
         <Reference Include="Unity.Addressables">
-          <HintPath>G:\Games\Steam\steamapps\common\TheLongDark\MelonLoader\Il2CppAssemblies\Unity.Addressables.dll</HintPath>
+          <HintPath>W:\Steam\steamapps\common\TheLongDark\MelonLoader\Il2CppAssemblies\Unity.Addressables.dll</HintPath>
         </Reference>
         <Reference Include="Unity.Mathematics" />
         <Reference Include="Unity.ResourceManager">
-          <HintPath>G:\Games\Steam\steamapps\common\TheLongDark\MelonLoader\Il2CppAssemblies\Unity.ResourceManager.dll</HintPath>
+          <HintPath>W:\Steam\steamapps\common\TheLongDark\MelonLoader\Il2CppAssemblies\Unity.ResourceManager.dll</HintPath>
         </Reference>
         <Reference Include="Unity.TextMeshPro" />
         <Reference Include="UnityEngine.AssetBundleModule" />
@@ -98,7 +98,10 @@
         <Reference Include="UnityEngine.Il2CppAssetBundleManager" />
         <Reference Include="UnityEngine.Il2CppImageConversionManager" />
         <Reference Include="UnityEngine.ParticleSystemModule">
-          <HintPath>G:\Games\Steam\steamapps\common\TheLongDark\MelonLoader\Il2CppAssemblies\UnityEngine.ParticleSystemModule.dll</HintPath>
+          <HintPath>W:\Steam\steamapps\common\TheLongDark\MelonLoader\Il2CppAssemblies\UnityEngine.ParticleSystemModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.PhysicsModule">
+          <HintPath>..\..\..\..\Steam\steamapps\common\TheLongDark\MelonLoader\Il2CppAssemblies\UnityEngine.PhysicsModule.dll</HintPath>
         </Reference>
     </ItemGroup>
 </Project>

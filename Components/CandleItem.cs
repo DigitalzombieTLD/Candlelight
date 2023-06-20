@@ -6,6 +6,7 @@ using Il2Cpp;
 
 namespace Candlelight
 {
+	[RegisterTypeInIl2Cpp]
 	public class CandleItem : MonoBehaviour
 	{
         public CandleItem(IntPtr intPtr) : base(intPtr)
@@ -56,17 +57,13 @@ namespace Candlelight
 		public string flickerPattern = "mmnmmommommnonmmonqnmmo";
 
 		public bool isLit = false;
-
-		
-		public void Start()
-		{
-			InitAll();
-		}
+						
 
 		public void Awake()
 		{
 			InitAll();
-		}
+            transformCandle();
+        }
 		
 
 		public void InitAll()
