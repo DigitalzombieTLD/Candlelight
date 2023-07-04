@@ -1,4 +1,4 @@
-The Long Dark - TLD Candlelight - v1.3.8 by Digitalzombie
+The Long Dark - TLD Candlelight - v1.4.0 by Digitalzombie
 ===========================================================
 
 How to install:
@@ -66,6 +66,9 @@ https://discord.gg/AqpW9TjUfr
 
 Changelog:
 ==========
+1.4.0
+- Fat harvest fix
+
 1.3.8
 - Fixed random errors
 
@@ -76,7 +79,6 @@ Changelog:
 - Added more loose spawnpoints
 - Fixed brightness of candle texture in dark places
 - Maybe fixed incompatibility with WeightTweaks
-
 
 1.3.0
 - After DLC update
