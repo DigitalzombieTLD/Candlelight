@@ -3,6 +3,7 @@ using System;
 using UnityEngine;
 using Il2Cpp;
 using UnityEngine.AddressableAssets;
+using static Il2Cpp.PlayerManager;
 
 namespace Candlelight
 {
@@ -59,9 +60,9 @@ namespace Candlelight
 					{
                         //GearItem gearItem = GameManager.GetPlayerManagerComponent().InstantiateItemInPlayerInventory("GEAR_FatRaw", false);					
                         GearItem gearItem = Addressables.LoadAssetAsync<GameObject>("GEAR_FatRaw").WaitForCompletion().GetComponent<GearItem>();
-						GameManager.GetPlayerManagerComponent().InstantiateItemInPlayerInventory(gearItem, 1, -1f, false, false);
-
-                        if (!msgAdded)
+						GameManager.GetPlayerManagerComponent().InstantiateItemInPlayerInventory(gearItem, 1, 1f, InventoryInstantiateFlags.None);
+                    
+						if (!msgAdded)
 						{
 							msgAdded = true;
 							string message = string.Concat(new object[]	{ gearItem.DisplayName,	" (", fatReward, ")"});

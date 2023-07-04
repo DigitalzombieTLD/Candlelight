@@ -15,7 +15,7 @@ namespace Candlelight
         public int layerMask = 0;
         public static RaycastHit hit;
 
-        public override void OnApplicationStart()
+        public override void OnInitializeMelon()
         {
             Candlelight.Settings.OnLoad();
             layerMask |= 1 << 17; // gear layer
