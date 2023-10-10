@@ -63,6 +63,7 @@ namespace Candlelight
 
         public static void SetBurnTime(string candleID, float burnTime)
         {
+            MelonLogger.Msg("Set burntime: " + burnTime);
             thisIniData[candleID].AddKey("burnTime");
             thisIniData[candleID]["burnTime"] = burnTime.ToString();
         }

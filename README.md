@@ -1,4 +1,4 @@
-The Long Dark - TLD Candlelight - v1.5.0 by Digitalzombie
+The Long Dark - TLD Candlelight - v1.5.5 by Digitalzombie
 ===========================================================
 
 How to install:
@@ -67,6 +67,11 @@ https://discord.gg/AqpW9TjUfr
 
 Changelog:
 ==========
+1.5.5
+- Added russian localization by TylerSky
+- Added turkish localization by Emre || Elderly
+
+
 1.5.0
 - Light fix for TLD > 2.23/2.24
 - No more bright (unlit) candles in Pleasent Valley Farmhouse
