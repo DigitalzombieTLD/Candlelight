@@ -56,9 +56,6 @@ BUGS ARE TO BE EXPECTED!!!
 Keep yourself up to date on the progress on:
 https://www.youtube.com/c/DigitalzombieDev
 
-Or on the TLD reddit:
-https://www.reddit.com/r/thelongdark/
-
 Or on Discord:
 https://discord.gg/AqpW9TjUfr
 
