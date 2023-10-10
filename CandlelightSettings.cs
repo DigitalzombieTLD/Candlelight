@@ -8,9 +8,10 @@ namespace Candlelight
 
 		[Section("General")]
 
-        [Name("Unlimited burntime")]
-        [Description("Candles won't burn down")]        
-        public bool unlimitedBurntime = false;
+        [Name("Burntime")]
+        [Description("Burntime in hours - 0 enables unlimited burntime")]
+        [Slider(0, 24)]
+        public float burnTime = 8f;
 
         [Name("Light intensity")]
 		[Description("Non-Flicker only. Default: 3")]

@@ -14,17 +14,77 @@ namespace Candlelight
 		{
 			if (__instance.name.Contains("GEAR_Candle"))
 			{
-				CandleItem candleComponent = __instance.gameObject.GetComponent<CandleItem>();
+                CandleItem candleComponent = __instance.gameObject.GetComponent<CandleItem>();
 
-				if (candleComponent == null)
+                if (candleComponent == null)
 				{
-					candleComponent = __instance.gameObject.AddComponent<CandleItem>();
-				}		
-			}
+					candleComponent = __instance.gameObject.AddComponent<CandleItem>();		
+                }
+
+                ObjectGuid candleGUID = __instance.gameObject.GetComponent<ObjectGuid>();
+
+                if (candleGUID == null)
+                {
+                    candleGUID = __instance.gameObject.AddComponent<ObjectGuid>();
+                }
+
+                __instance.m_ObjectGuid = candleGUID;
+
+                if (candleGUID != null)
+                {
+                    candleComponent.PID = candleGUID.GetPDID();
+
+                    if (candleGUID.PDID == null)
+                    {
+                        candleGUID.MaybeRuntimeRegister();
+                        candleComponent.PID = candleGUID.GetPDID();
+                    }                    
+                }
+            }
 		}
 	}
 
-	[HarmonyLib.HarmonyPatch(typeof(Panel_BodyHarvest), "TransferHideFromCarcassToInventory")]
+    [HarmonyLib.HarmonyPatch(typeof(GearItem), "Deserialize")]
+    public class candleDeserializePatcher
+    {
+        public static void Postfix(ref GearItem __instance, GearItemSaveDataProxy proxy)
+        {            
+            if (__instance.name.Contains("GEAR_Candle"))
+            {
+                CandleItem candleComponent = __instance.gameObject.GetComponent<CandleItem>();
+
+                if (candleComponent != null)
+                {             
+                    ObjectGuid candleGUID = __instance.gameObject.GetComponent<ObjectGuid>();
+
+                    if (candleGUID != null)
+                    {
+                        candleComponent.PID = candleGUID.GetPDID();
+
+                        if (candleGUID.PDID == null)
+                        {                            
+                            candleGUID.MaybeRuntimeRegister();
+                            candleComponent.PID = candleGUID.GetPDID();
+                        }
+
+                        candleComponent.burnTime = SaveLoad.GetBurnTime(candleComponent.PID);
+
+                        if (SaveLoad.GetLitState(candleComponent.PID) == true)
+                        {
+                            candleComponent.turnOn(true);
+                        }
+						else
+						{
+                            candleComponent.transformCandle();
+                            candleComponent.turnOff();                            
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    [HarmonyLib.HarmonyPatch(typeof(Panel_BodyHarvest), "TransferHideFromCarcassToInventory")]
 	public class harvestFatPatcher
 	{
 		public static void Postfix(ref Panel_BodyHarvest __instance)
@@ -53,7 +113,6 @@ namespace Candlelight
 					fatReward = 7;
 				}
 
-
 				for (int x = 1; x <= harvestAmount; x++)
 				{
 					for(int y = 1; y<= fatReward; y++)
@@ -74,53 +133,6 @@ namespace Candlelight
 		}
 	}
 
-	[HarmonyLib.HarmonyPatch(typeof(GearItem), "IsLitMatch")]
-	public class isLitPatcher
-	{
-		public static void Postfix(ref GearItem __instance, ref bool __result)
-		{
-			if (__instance.name.Contains("GEAR_Candle"))
-			{
-				if (__instance.m_BeenInPlayerInventory)
-				{
-					CandleItem thisCandle = __instance.gameObject.GetComponent<CandleItem>();
-
-					if (thisCandle.isLit)
-					{
-						__result = true;
-					}
-				}	
-			}
-		}
-	}
-
-	
-	[HarmonyLib.HarmonyPatch(typeof(PlayerManager), "ProcessPickupItemInteraction")]
-	public class candleIdontEvenCareAnymore
-	{
-		public static bool Prefix(ref GearItem item, ref bool forceEquip, ref bool skipAudio)
-		{
-			if (item.name.Contains("GEAR_Candle"))
-			{			
-				CandleItem candleComponent = item.gameObject.GetComponent<CandleItem>();
-				
-				if (candleComponent.isLit)
-				{
-					candleComponent.turnOff();
-					return false;
-				}
-				else
-				{
-					item.m_BeenInPlayerInventory = false;
-				}
-			}
-
-			return true;
-		}
-	}
-
-	//GearItem AddItemToPlayerInventory(GearItem gi, bool trackItemLooted = true, bool enableNotificationFlag = false)
-
 	[HarmonyLib.HarmonyPatch(typeof(PlayerManager), "AddItemToPlayerInventory")]
 	public class candleTurnOffOnStow
 	{
@@ -132,7 +144,8 @@ namespace Candlelight
 
 				if (candleComponent.isLit)
 				{
-					candleComponent.turnOff();					
+                    candleComponent.transformCandle();
+                    candleComponent.turnOff();					
 				}
 			}
 		}
@@ -148,7 +161,8 @@ namespace Candlelight
 				CandleItem candleComponent = __instance.gameObject.GetComponent<CandleItem>();
 				if (candleComponent)
 				{
-					candleComponent.turnOff();
+                    candleComponent.transformCandle();
+                    candleComponent.turnOff();
 				}
 			}
 
@@ -156,46 +170,59 @@ namespace Candlelight
 		}
 	}
 
-	[HarmonyLib.HarmonyPatch(typeof(PlayerManager), "StartPlaceMesh", new Type[] { typeof(GameObject), typeof(float), typeof(PlaceMeshFlags) })]
-	public class turnOffWhileMoving
-	{
-		public static void Prefix(ref PlayerManager __instance, ref GameObject objectToPlace)
-		{
-			if (objectToPlace.name.Contains("GEAR_Candle"))
-			{
-				CandleItem candleComponent = objectToPlace.GetComponent<CandleItem>();
-				candleComponent.fakeOff();
-			}
-		}
-	}
+    [HarmonyLib.HarmonyPatch(typeof(GearItem), "Clone")]
+    public class candleTurnOffOnClone
+    {
+        public static void Prefix(ref GearItem __instance)
+        {
+            if (__instance.name.Contains("GEAR_Candle"))
+            {
+                CandleItem candleComponent = __instance.gameObject.GetComponent<CandleItem>();
+                if (candleComponent)
+                {
+                    candleComponent.transformCandle();
+                    candleComponent.turnOff();
+                }
+            }
+        }
+    }
+    
+    [HarmonyLib.HarmonyPatch(typeof(PlayerManager), "MaybeDisableInspectModeMesh")]
+    public class InspectModeMeshDisablePatcher
+    {
+        public static bool Prefix(ref PlayerManager __instance, GearItem gi)
+        {
+            if (gi.name.Contains("GEAR_Candle"))
+            {
+                return false;
+            }
 
-	[HarmonyLib.HarmonyPatch(typeof(PlayerManager), "PlaceMeshInWorld")]
-	public class maybeTurnOnAgain
-	{
-		private static bool Prefix(ref PlayerManager __instance)
-		{
-			if (__instance.m_ObjectToPlace.name.Contains("GEAR_Candle"))
-			{
-				CandleItem candleComponent = __instance.m_ObjectToPlace.gameObject.GetComponent<CandleItem>();
+            return true;
+        }
+    }
 
-				candleComponent.fakeOn();
-			}
-			return true;
-		}
-	}
+    [HarmonyLib.HarmonyPatch(typeof(PlayerManager), "MaybeEnableInspectModeMesh")]
+    public class InspectModeMeshEnablePatcher
+    {
+        public static bool Prefix(ref PlayerManager __instance, GearItem gi)
+        {
+            if (gi.name.Contains("GEAR_Candle"))
+            {
+                return false;
+            }
 
-	[HarmonyLib.HarmonyPatch(typeof(PlayerManager), "CancelPlaceMesh")]
-	public class maybeTurnOnAgainAfterCancel
-	{
-		private static bool Prefix(ref PlayerManager __instance)
-		{
-			if (__instance.m_ObjectToPlace.name.Contains("GEAR_Candle"))
-			{
-				CandleItem candleComponent = __instance.m_ObjectToPlace.gameObject.GetComponent<CandleItem>();
+            return true;
+        }
+    }
 
-				candleComponent.fakeOn();
-			}
-			return true;
-		}
-	}
+    
+
+    [HarmonyLib.HarmonyPatch(typeof(SaveGameSystem), nameof(SaveGameSystem.SaveSceneData))]
+    public class SaveCandles
+    {
+        public static void Postfix(ref SlotData slot)
+        {
+            SaveLoad.SaveTheCandles();        
+        }
+    }
 }

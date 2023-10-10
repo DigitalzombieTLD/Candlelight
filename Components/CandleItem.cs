@@ -13,11 +13,17 @@ namespace Candlelight
         {
         }
 
+		public string PID;
+		public float burnTime = 0;
+		public GearItem candleGearItem;
+
         public Light lightSourceMain;
 		public Light lightSourceSecondary;
 		public GearItem thisGearItem;
 		public Material bodyMaterial;
 		public Material flameMaterial;
+		public int flickerRandom = 30;
+		public int flickerCounter = 0;
 
 		public MeshRenderer body0Mesh;
 		public MeshRenderer body1Mesh;
@@ -35,163 +41,228 @@ namespace Candlelight
 		public float flameYbody3 = 0.131f;
 
 		public Vector3 zeroRotation = new Vector3(0,0,0);
+        public Vector3 lightLocalPosition = new Vector3(0, 0.667f, 0);
 
-		public int currentBodyState = -1;
+        public int currentBodyState = -1;
 
 		public GameObject flame;
 		public GameObject flameParent;
 		public GameObject wick;
 		public Material wickMaterial;
 
-		public HeatSource candleHeatComponent = null;
-		public LightTracking candleLightTrackingComponent = null;
+		public HeatSource candleHeatComponent;
+		public LightTracking candleLightTrackingComponent;
+		public LightQualitySwitch candleLightQualitySwitch;
 
 		public ParticleSystem smokePuff;
 		public ParticleSystem smokePuff2;
 
 		public GameObject normalModelParent;
 		public GameObject inspectModelParent;
+		public Inspect inspectComponent;
 
 		public float windSpeedExtinguish = 3f;
 		public float lifeTimeDivisor = 4.5f; // about 8 hours burn time
 		public string flickerPattern = "mmnmmommommnonmmonqnmmo";
 
-		public bool isLit = false;
-						
+		public bool isLit = false;						
 
 		public void Awake()
 		{
-			InitAll();
-            transformCandle();
+            thisGearItem = this.gameObject.GetComponent<GearItem>();
+
+            lightSourceMain = this.transform.Find("LightsourceMain").gameObject.GetComponent<Light>();
+            lightSourceMain.transform.localPosition = lightLocalPosition;
+            lightSourceSecondary = this.transform.Find("LightsourceSecondary").gameObject.GetComponent<Light>();
+            lightSourceSecondary.gameObject.SetActive(false);
+
+            flameParent = this.transform.Find("FlameParent").gameObject;
+            flame = flameParent.transform.Find("Flame").gameObject;
+            flameMaterial = flame.GetComponent<MeshRenderer>().material;
+
+            normalModelParent = this.transform.Find("Normal").gameObject;
+            inspectModelParent = this.transform.Find("Inspect").gameObject;
+            inspectModelParent.SetActive(false);
+
+            inspectComponent = this.GetComponent<Inspect>();
+			inspectComponent.m_InspectModeMesh = this.gameObject;
+
+            wick = this.transform.Find("Wick").gameObject;
+            wickMaterial = wick.GetComponent<MeshRenderer>().material;
+            wickMaterial.SetFloat("_Emission_min", 1);
+
+            flickerRandom = UnityEngine.Random.Range(5, 50);
+
+            smokePuff = wick.transform.Find("smokePuff").gameObject.GetComponent<ParticleSystem>();
+
+            body0Mesh = normalModelParent.transform.Find("Body0").gameObject.GetComponent<MeshRenderer>();
+            body1Mesh = normalModelParent.transform.Find("Body1").gameObject.GetComponent<MeshRenderer>();
+            body2Mesh = normalModelParent.transform.Find("Body2").gameObject.GetComponent<MeshRenderer>();
+            body3Mesh = normalModelParent.transform.Find("Body3").gameObject.GetComponent<MeshRenderer>();
+
+            body0Mesh.lightProbeUsage = UnityEngine.Rendering.LightProbeUsage.Off;
+            body1Mesh.lightProbeUsage = UnityEngine.Rendering.LightProbeUsage.Off;
+            body2Mesh.lightProbeUsage = UnityEngine.Rendering.LightProbeUsage.Off;
+            body3Mesh.lightProbeUsage = UnityEngine.Rendering.LightProbeUsage.Off;
+
+            bodyMaterial = body0Mesh.material;            
+
+            lightSourceMain.intensity = Settings.options.lightIntensity;
+            lightSourceMain.range = Settings.options.lightRange;
+
+            candleLightTrackingComponent = lightSourceMain.gameObject.GetComponent<LightTracking>();
+
+            if (candleLightTrackingComponent == null)
+            {
+                candleLightTrackingComponent = lightSourceMain.gameObject.AddComponent<LightTracking>();
+            }
+
+            candleLightQualitySwitch = lightSourceMain.gameObject.GetComponent<LightQualitySwitch>();
+
+            if (candleLightQualitySwitch == null)
+            {
+                candleLightQualitySwitch = lightSourceMain.gameObject.AddComponent<LightQualitySwitch>();
+            }
+
+            candleHeatComponent = lightSourceMain.gameObject.GetComponent<HeatSource>();
+
+            if (candleHeatComponent == null)
+            {
+                candleHeatComponent = lightSourceMain.gameObject.AddComponent<HeatSource>();
+            }
+
+			transformCandle();
+            turnOff();
         }
 		
 
-		public void InitAll()
-		{
-			thisGearItem = this.gameObject.GetComponent<GearItem>();
-			lightSourceMain = this.transform.Find("LightsourceMain").gameObject.GetComponent<Light>();
-			lightSourceSecondary = this.transform.Find("LightsourceSecondary").gameObject.GetComponent<Light>();
-			lightSourceSecondary.gameObject.SetActive(false);
-
-			flameParent = this.transform.Find("FlameParent").gameObject;
-			flame = flameParent.transform.Find("Flame").gameObject;
-			flameMaterial = flame.GetComponent<MeshRenderer>().material;
-
-			normalModelParent = this.transform.Find("Normal").gameObject;
-			inspectModelParent = this.transform.Find("Inspect").gameObject;
-
-			wick = this.transform.Find("Wick").gameObject;
-			wickMaterial = wick.GetComponent<MeshRenderer>().material;
-			wickMaterial.SetFloat("_Emission_min", 1);
-
-			smokePuff = wick.transform.Find("smokePuff").gameObject.GetComponent<ParticleSystem>();
-
-			body0Mesh = normalModelParent.transform.Find("Body0").gameObject.GetComponent<MeshRenderer>();
-			body1Mesh = normalModelParent.transform.Find("Body1").gameObject.GetComponent<MeshRenderer>();
-			body2Mesh = normalModelParent.transform.Find("Body2").gameObject.GetComponent<MeshRenderer>();
-			body3Mesh = normalModelParent.transform.Find("Body3").gameObject.GetComponent<MeshRenderer>();
-						
-			bodyMaterial = body0Mesh.material;
-			transformCandle();
-
-			lightSourceMain.intensity = Settings.options.lightIntensity;
-			lightSourceMain.range = Settings.options.lightRange;
-
-						
-			if (candleLightTrackingComponent == null)
-			{
-				candleLightTrackingComponent = lightSourceMain.gameObject.AddComponent<LightTracking>();
-			}
-
-			if (candleHeatComponent == null)
-			{
-				candleHeatComponent = thisGearItem.gameObject.AddComponent<HeatSource>();
-			}
-
-			InitHeat();
-
-			// Cheaty workaround to save candle on/off status
-			if (thisGearItem.m_BeenInPlayerInventory)
-			{
-				turnOn();
-			}
-			else
-			{
-				turnOff();
-			}
-		}
-
 		public bool transformCandle()
 		{
-			inspectModelParent.SetActive(false);
+			//inspectModelParent.SetActive(false);					
 
-			if (currentBodyState != 0 && thisGearItem.CurrentHP >= 75)
-			{
-				body0Mesh.enabled = true;
-				body1Mesh.enabled = false;
-				body2Mesh.enabled = false;
-				body3Mesh.enabled = false;
-				bodyMaterial = body0Mesh.material;
-				bodyMaterialOn();
-				wick.transform.localPosition = new Vector3(wick.transform.localPosition.x, wickYbody0, wick.transform.localPosition.z);
-				flameParent.transform.localPosition = new Vector3(flame.transform.localPosition.x, flameYbody0, flame.transform.localPosition.z);
-				
-				currentBodyState = 0;
-				return true;
-			}
-			else if (currentBodyState != 1 && thisGearItem.CurrentHP >= 50 && thisGearItem.CurrentHP < 75)
-			{
-				body0Mesh.enabled = false;
-				body1Mesh.enabled = true;
-				body2Mesh.enabled = false;
-				body3Mesh.enabled = false;
-				bodyMaterial = body1Mesh.material;
-				bodyMaterialOn();
-				wick.transform.localPosition = new Vector3(wick.transform.localPosition.x, wickYbody1, wick.transform.localPosition.z);
-				flameParent.transform.localPosition = new Vector3(flame.transform.localPosition.x, flameYbody1, flame.transform.localPosition.z);
+            float burnTimeOptionDivision = Settings.options.burnTime / 4f;
 
-				currentBodyState = 1;
-				return true;
-			}
-			else if (currentBodyState != 2 && thisGearItem.CurrentHP >= 25 && thisGearItem.CurrentHP < 50)
-			{
-				body0Mesh.enabled = false;
-				body1Mesh.enabled = false;
-				body2Mesh.enabled = true;
-				body3Mesh.enabled = false;
-				bodyMaterial = body2Mesh.material;
-				bodyMaterialOn();
-				wick.transform.localPosition = new Vector3(wick.transform.localPosition.x, wickYbody2, wick.transform.localPosition.z);
-				flameParent.transform.localPosition = new Vector3(flame.transform.localPosition.x, flameYbody2, flame.transform.localPosition.z);
+            if (Settings.options.burnTime == 0)
+            {
+				if(currentBodyState == 2)
+				{
+					return true;
+				}
 
-				currentBodyState = 2;
-				return true;
-			}
-			else if (currentBodyState != 3 && thisGearItem.CurrentHP >= 0 && thisGearItem.CurrentHP < 25)
-			{
-				body0Mesh.enabled = false;
-				body1Mesh.enabled = false;
-				body2Mesh.enabled = false;
-				body3Mesh.enabled = true;
-				bodyMaterial = body3Mesh.material;
-				bodyMaterialOn();
-				wick.transform.localPosition = new Vector3(wick.transform.localPosition.x, wickYbody3, wick.transform.localPosition.z);
-				flameParent.transform.localPosition = new Vector3(flame.transform.localPosition.x, flameYbody3, flame.transform.localPosition.z);
+                body0Mesh.enabled = false;
+                body1Mesh.enabled = false;				
+                body2Mesh.enabled = true;
+                body3Mesh.enabled = false;
+                bodyMaterial = body1Mesh.material;
+                bodyMaterialOn();
+                wick.transform.localPosition = new Vector3(wick.transform.localPosition.x, wickYbody1, wick.transform.localPosition.z);
+                flameParent.transform.localPosition = new Vector3(flame.transform.localPosition.x, flameYbody1, flame.transform.localPosition.z);
 
-				currentBodyState = 3;
-				return true;
-			}
+                currentBodyState = 2;
+                return true;
+            }
+            else if (burnTime > (burnTimeOptionDivision * 3))
+            {
+                if (currentBodyState == 3)
+                {
+                    return true;
+                }
 
-			return false;
+                body0Mesh.enabled = false;
+                body1Mesh.enabled = false;
+                body2Mesh.enabled = false;
+                body3Mesh.enabled = true;
+                bodyMaterial = body3Mesh.material;
+                bodyMaterialOn();
+                wick.transform.localPosition = new Vector3(wick.transform.localPosition.x, wickYbody3, wick.transform.localPosition.z);
+                flameParent.transform.localPosition = new Vector3(flame.transform.localPosition.x, flameYbody3, flame.transform.localPosition.z);
+
+                currentBodyState = 3;
+                return true;
+            }
+            else if (burnTime > (burnTimeOptionDivision * 2))
+            {
+                if (currentBodyState == 2)
+                {
+                    return true;
+                }
+
+                body0Mesh.enabled = false;
+                body1Mesh.enabled = false;
+                body2Mesh.enabled = true;
+                body3Mesh.enabled = false;
+                bodyMaterial = body2Mesh.material;
+                bodyMaterialOn();
+                wick.transform.localPosition = new Vector3(wick.transform.localPosition.x, wickYbody2, wick.transform.localPosition.z);
+                flameParent.transform.localPosition = new Vector3(flame.transform.localPosition.x, flameYbody2, flame.transform.localPosition.z);
+
+                currentBodyState = 2;
+                return true;
+            }
+            else if (burnTime > (burnTimeOptionDivision))
+            {
+                if (currentBodyState == 1)
+                {
+                    return true;
+                }
+
+                body0Mesh.enabled = false;
+                body1Mesh.enabled = true;
+                body2Mesh.enabled = false;
+                body3Mesh.enabled = false;
+                bodyMaterial = body1Mesh.material;
+                bodyMaterialOn();
+                wick.transform.localPosition = new Vector3(wick.transform.localPosition.x, wickYbody1, wick.transform.localPosition.z);
+                flameParent.transform.localPosition = new Vector3(flame.transform.localPosition.x, flameYbody1, flame.transform.localPosition.z);
+
+                currentBodyState = 1;
+                return true;
+            }
+            else if (burnTime >= 0)
+            {
+                if (currentBodyState == 0)
+                {
+                    return true;
+                }
+
+                body0Mesh.enabled = true;
+                body1Mesh.enabled = false;
+                body2Mesh.enabled = false;
+                body3Mesh.enabled = false;
+                bodyMaterial = body0Mesh.material;
+                bodyMaterialOn();
+                wick.transform.localPosition = new Vector3(wick.transform.localPosition.x, wickYbody0, wick.transform.localPosition.z);
+                flameParent.transform.localPosition = new Vector3(flame.transform.localPosition.x, flameYbody0, flame.transform.localPosition.z);
+
+                currentBodyState = 0;
+                return true;
+            }         
+           
+
+            return false;
 		}
 
 		public void Update()
 		{
 			if (isLit)
 			{
+                burnTime = burnTime + GameManager.GetTimeOfDayComponent().GetTODHours(Time.deltaTime);
+                
+				if(flickerCounter < flickerRandom)
+				{
+					flickerCounter++;
+				}
+				
 				transformCandle();
+                SaveLoad.SetBurnTime(PID, burnTime);
 
-				if (thisGearItem.m_InPlayerInventory)
+                if (Settings.options.burnTime != 0 && burnTime > Settings.options.burnTime)
+                {
+                    turnOff();
+					return;
+                }
+
+                if (thisGearItem.m_InPlayerInventory)
 				{
 					turnOff();
 					return;
@@ -214,37 +285,18 @@ namespace Candlelight
 						lightSourceMain.intensity = Settings.options.lightIntensity;
 						lightSourceMain.range = Settings.options.lightRange;
 					}
-				}
-				
-				//thisGearItem.m_MaxHP = thisGearItem.m_MaxHP - (todminutes/3);
-
-				if(Settings.options.unlimitedBurntime)
-				{
-					if (thisGearItem.CurrentHP < 5)
-					{
-                        thisGearItem.CurrentHP = 5f;
-                    }
-
-					return;
-                }
-
-				if(thisGearItem.CurrentHP > 0)
-				{
-					float todminutes = GameManager.GetTimeOfDayComponent().GetTODMinutes(Time.deltaTime);
-					thisGearItem.CurrentHP = thisGearItem.CurrentHP - (todminutes/lifeTimeDivisor);
-					//MelonLogger.Msg("HP current: " + thisGearItem.CurrentHP);
-				}
-				else
-				{
-					thisGearItem.CurrentHP = 0f;
-					turnOff();
-				}
+				}               
 			}
 		}
 
 		public void Flicker()
 		{
 			float flickerFPS;
+
+			if(flickerCounter<flickerRandom)
+			{				
+				return;
+			}
 
 			if (GameManager.GetWeatherComponent().IsIndoorEnvironment())
 			{
@@ -253,8 +305,7 @@ namespace Candlelight
 			else
 			{
 				flickerFPS = Settings.options.flickerFPS + GameManager.GetWindComponent().GetSpeedMPH();
-			}
-			 
+			}			 
 
 			int x = (int)(Time.time * flickerFPS);
 
@@ -262,43 +313,40 @@ namespace Candlelight
 			float intensity = (flickerPattern[y] - 'a') / (float)('m' - 'a');
 			lightSourceMain.intensity = intensity * Settings.options.flickerMaxIntensity;
 			lightSourceMain.range = Settings.options.lightRange;
-		}
+		}		
 
-		public bool canIgnite()
-		{	
-			if (thisGearItem.CurrentHP < 0.1f || (GameManager.GetWindComponent().TooWindyForPlayerAction(windSpeedExtinguish) && !GameManager.GetWindComponent().IsPositionOccludedFromWind(thisGearItem.transform.position)))
-			{				
-				return false;
-			}
-
-			return true;
-		}
-
-		public bool turnOn()
+		public void turnOn(bool onLoad)
 		{
-			if(!canIgnite())
-			{
-				if (thisGearItem.CurrentHP < 0.1f)
-				{
-					GameAudioManager.PlayGUIError();
-					HUDMessage.AddMessage("The candle is completely burned down", true, true);
-					turnOff();
-					return false;
-				}
+            if (Settings.options.burnTime > 0 && burnTime > Settings.options.burnTime)
+            {
+                GameAudioManager.PlayGUIError();
 
-				if (GameManager.GetWindComponent().TooWindyForPlayerAction(windSpeedExtinguish) && !GameManager.GetWindComponent().IsPositionOccludedFromWind(thisGearItem.transform.position))
-				{
-					GameAudioManager.PlayGUIError();
-					HUDMessage.AddMessage("It is too windy to light the candle", true, true);
-					turnOff();
-					return false;
-				}
+                if (!onLoad)
+                {
+                    HUDMessage.AddMessage("The candle is completely burned down", true, true);
+                }
+                
+                return;
+            }
 
-				return false;
-			}
-			
-			lightSourceMain.gameObject.SetActive(true);
+            if (GameManager.GetWindComponent().TooWindyForPlayerAction(windSpeedExtinguish) && !GameManager.GetWindComponent().IsPositionOccludedFromWind(thisGearItem.transform.position))
+            {
+                GameAudioManager.PlayGUIError();
+
+                if (!onLoad)
+                {
+                    HUDMessage.AddMessage("It is too windy to light the candle", true, true);
+                }
+
+                turnOff();
+                return;
+            }
+
+            flickerCounter = 0;
+
+            lightSourceMain.gameObject.SetActive(true);
 			flame.gameObject.SetActive(true);
+
 			bodyMaterialOn();
 
 			candleHeatComponent.TurnOn();
@@ -312,15 +360,15 @@ namespace Candlelight
 			isLit = true;
 			MelonCoroutines.Start(toggleWickGlow(true, wickMaterial));
 			alignFlameToNewPosition();
-
-			thisGearItem.m_BeenInPlayerInventory = true;
-			return true;
-		}
+            Heat(true);
+            SaveLoad.SetLitState(PID, true);
+        }
 
 		public void bodyMaterialOn()
 		{
-			bodyMaterial.SetFloat("_TimeScale", 0.05f);
-			bodyMaterial.SetFloat("_EmissionPow", 4.1f);
+            //bodyMaterial.SetFloat("_TimeScale", 0.05f);
+            bodyMaterial.SetFloat("_TimeScale", UnityEngine.Random.Range(38f, 64f)/1000);
+            bodyMaterial.SetFloat("_EmissionPow", 4.1f);
 			bodyMaterial.SetFloat("_EmissionFlowFactor", 0.3114f);
 			bodyMaterial.SetFloat("_EmissionFactor", 0.6f);
 			bodyMaterial.SetFloat("_EmissionNoise", 1);
@@ -348,8 +396,9 @@ namespace Candlelight
 			lightSourceSecondary.gameObject.SetActive(false);
 			flame.gameObject.SetActive(false);
 			candleHeatComponent.TurnOffImmediate();
-			//LightingManager.Remove(candleLightTrackingComponent);
-			bodyMaterialOff();
+			Heat(false);
+
+            bodyMaterialOff();
 			
 			if(isLit)
 			{
@@ -357,51 +406,37 @@ namespace Candlelight
 				smokePuff.Play();
 			}
 
-			isLit = false;
-			thisGearItem.m_BeenInPlayerInventory = false;
-		}
+			SaveLoad.SetLitState(PID, false);
+			flickerCounter = 0;
+            isLit = false;			
+		}				
 
-		public void fakeOff()
+		public void Heat(bool enable)
 		{
-			lightSourceMain.gameObject.SetActive(false);
-			lightSourceSecondary.gameObject.SetActive(false);
-			flame.gameObject.SetActive(false);
-			candleHeatComponent.TurnOffImmediate();
-			//smokePuff.Play();
-
-			bodyMaterialOff();
-		}
-
-		public void fakeOn()
-		{
-			if (isLit)
-			{
-				turnOn();
-			}
+			if(enable)
+			{			
+				candleHeatComponent.m_MaxTempIncrease = 2f;
+				candleHeatComponent.m_MaxTempIncreaseInnerRadius = 2f;
+				candleHeatComponent.m_MaxTempIncreaseOuterRadius = 1f;
+				candleHeatComponent.m_TimeToReachMaxTempMinutes = 2f;
+				candleHeatComponent.m_StartingTemp = 2f;
+				candleHeatComponent.TurnOn();
+            }
 			else
 			{
-				turnOff();
-			}
-		}
-
-		public void InitHeat()
-		{
-			candleHeatComponent.m_MaxTempIncrease = 2f;
-			candleHeatComponent.m_MaxTempIncreaseInnerRadius = 1f;
-			candleHeatComponent.m_MaxTempIncreaseOuterRadius = 1.5f;
-			candleHeatComponent.m_TimeToReachMaxTempMinutes = 2f;
-			candleHeatComponent.m_StartingTemp = 0f;
-		}
+                candleHeatComponent.TurnOff();
+            }
+        }
 
 		public void toggle()
 		{
 			if(isLit)
 			{
-				turnOff();
+				turnOff();				
 			}
 			else
 			{
-				turnOn();
+				turnOn(false);
 			}			
 		}
 
@@ -437,5 +472,5 @@ namespace Candlelight
 			valueToLerp = endValue;
 			wickMaterial.SetFloat("_Emission_min", valueToLerp);
 		}
-	}
+    }
 }

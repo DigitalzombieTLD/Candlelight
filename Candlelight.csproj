@@ -79,6 +79,9 @@
         <Reference Include="Il2CppTLD.TimeLib" />
         <Reference Include="Il2CppTLD.Trial" />
         <Reference Include="Il2CppTLD.UserGeneratedContent" />
+        <Reference Include="ModData">
+          <HintPath>..\..\..\..\Steam\steamapps\common\TheLongDark\Mods\ModData.dll</HintPath>
+        </Reference>
         <Reference Include="ModSettings">
           <HintPath>W:\Steam\steamapps\common\TheLongDark\Mods\ModSettings.dll</HintPath>
         </Reference>

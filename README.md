@@ -1,4 +1,4 @@
-The Long Dark - TLD Candlelight - v1.4.0 by Digitalzombie
+The Long Dark - TLD Candlelight - v1.5.0 by Digitalzombie
 ===========================================================
 
 How to install:
@@ -14,6 +14,7 @@ This creates a new folder named "Mods" in your TLD folder.
 - ModComponent
 - CraftingRevision
 - GearSpawner
+- ModData
 
 You can find everything on: https://xpazeman.com/tld-mod-list/
 
@@ -32,7 +33,7 @@ New items:
 - GEAR_Wick -> 1 cloth = 4 wicks
 - GEAR_FatRaw -> Can be obtained by harvesting hide/pelt from carcasses, needs to be boiled to get:
 - GEAR_Wax -> 4 pieces of tallow + 1 wick can be crafted into: 
-- GEAR_Candle -> Burns for about 8 hours
+- GEAR_Candle -> Burns for 8 hours (default, adjustable)
 
 Everything can spawn as loot. 
 
@@ -66,6 +67,20 @@ https://discord.gg/AqpW9TjUfr
 
 Changelog:
 ==========
+1.5.0
+- Light fix for TLD > 2.23/2.24
+- New savesystem (burntime, lit state), independant of item "health"
+- Small light tweaks (light doesn't shine through thin surfaces below it)
+- Burntime adjustment in settings (0-24 hours, 0 burns forever)
+- No more synchronized flicker
+- Inspectmode shows burned down model
+- Candle doesn't turn off on move
+- Maybe more, I forgot
+
+Known issues: 
+- Candle burntime reset on old savegames (if you got candles already)
+- Inspect model reacts strange to light when candle is lit
+
 1.4.0
 - Fat harvest fix
 

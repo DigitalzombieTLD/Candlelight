@@ -5,6 +5,7 @@ using Il2CppInterop.Runtime.Injection;
 using System.Collections;
 using Il2Cpp;
 using UnityEngine.Device;
+using Ini.Parser;
 
 namespace Candlelight
 {
@@ -14,11 +15,20 @@ namespace Candlelight
         public static Color candleFlameColor = new Color(0f, 0f, 0f);
         public int layerMask = 0;
         public static RaycastHit hit;
+        
 
         public override void OnInitializeMelon()
         {
             Candlelight.Settings.OnLoad();
-            layerMask |= 1 << 17; // gear layer
+            layerMask |= 1 << 17; // gear layer            
+        }
+
+        public override void OnSceneWasLoaded(int buildIndex, string sceneName)
+        {
+            if(sceneName.Contains("SANDBOX"))
+            {
+                SaveLoad.LoadTheCandles();
+            }           
         }
 
         public override void OnUpdate()
@@ -44,13 +54,12 @@ namespace Candlelight
                         }                     
 
                         if(thisCandle != null)
-                        {
-        
+                        {        
                             PlayerManager currentPlayerManager = GameManager.GetPlayerManagerComponent();
 
                             if (thisCandle.isLit)
                             {                               
-                                if (currentPlayerManager.m_ItemInHands.m_TorchItem && !currentPlayerManager.m_ItemInHands.IsLitTorch())
+                                if (currentPlayerManager.m_ItemInHands && currentPlayerManager.m_ItemInHands.m_TorchItem && !currentPlayerManager.m_ItemInHands.IsLitTorch())
                                 {
                                     currentPlayerManager.m_ItemInHands.m_TorchItem.Ignite();
                                 }
@@ -65,7 +74,7 @@ namespace Candlelight
                                 {
                                     if (currentPlayerManager.m_ItemInHands.IsLitMatch() || currentPlayerManager.m_ItemInHands.IsLitFlare() || currentPlayerManager.m_ItemInHands.IsLitTorch())
                                     {
-                                        thisCandle.turnOn();
+                                        thisCandle.turnOn(false);
                                     }
                                 }
                             }
