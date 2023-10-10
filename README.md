@@ -69,12 +69,14 @@ Changelog:
 ==========
 1.5.0
 - Light fix for TLD > 2.23/2.24
+- No more bright (unlit) candles in Pleasent Valley Farmhouse
 - New savesystem (burntime, lit state), independant of item "health"
 - Small light tweaks (light doesn't shine through thin surfaces below it)
 - Burntime adjustment in settings (0-24 hours, 0 burns forever)
 - No more synchronized flicker
 - Inspectmode shows burned down model
 - Candle doesn't turn off on move
+- Requires ModData now
 - Maybe more, I forgot
 
 Known issues: 
