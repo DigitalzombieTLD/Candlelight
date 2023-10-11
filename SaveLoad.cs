@@ -17,20 +17,26 @@ namespace Candlelight
         public static IniData thisIniData;
         public static ModDataManager dataManager;
         public static string moddataString;
+        public static bool reloadPending = true;
 
         public static void LoadTheCandles()
 		{
-            iniDataParser = new IniDataParser();
-            thisIniData = new IniData();
-            dataManager = new ModDataManager("CandleLight", true);
+            if (reloadPending)
+            {
+                iniDataParser = new IniDataParser();
+                thisIniData = new IniData();
+                dataManager = new ModDataManager("CandleLight", true);
 
-            iniDataParser.Configuration.AllowCreateSectionsOnFly = true;            
-            iniDataParser.Configuration.SkipInvalidLines = true;
-            iniDataParser.Configuration.OverrideDuplicateKeys = true;
-            iniDataParser.Configuration.AllowDuplicateKeys = false;
+                iniDataParser.Configuration.AllowCreateSectionsOnFly = true;
+                iniDataParser.Configuration.SkipInvalidLines = true;
+                iniDataParser.Configuration.OverrideDuplicateKeys = true;
+                iniDataParser.Configuration.AllowDuplicateKeys = false;
 
-            moddataString = dataManager.Load();
-            thisIniData = iniDataParser.Parse(moddataString);          
+                moddataString = dataManager.Load();
+                thisIniData = iniDataParser.Parse(moddataString);
+
+                reloadPending = false;
+            }
         }      
 
         public static void MaybeAddCandle(string candleID)
@@ -61,9 +67,18 @@ namespace Candlelight
             return bool.Parse(thisIniData[candleID]["isLit"]);
         }
 
+        public static int GetBodyState(string candleID)
+        {
+            if (candleID == null || !thisIniData[candleID].ContainsKey("bodyState"))
+            {
+                return UnityEngine.Random.RandomRange(0,3);
+            }
+
+            return int.Parse(thisIniData[candleID]["bodyState"]);
+        }
+
         public static void SetBurnTime(string candleID, float burnTime)
         {
-            MelonLogger.Msg("Set burntime: " + burnTime);
             thisIniData[candleID].AddKey("burnTime");
             thisIniData[candleID]["burnTime"] = burnTime.ToString();
         }
@@ -72,6 +87,12 @@ namespace Candlelight
         {            
             thisIniData[candleID].AddKey("isLit");
             thisIniData[candleID]["isLit"] = litState.ToString();
+        }
+
+        public static void SetBodyState(string candleID, int bodyState)
+        {
+            thisIniData[candleID].AddKey("bodyState");
+            thisIniData[candleID]["bodyState"] = bodyState.ToString();
         }
 
         public static void SaveTheCandles()

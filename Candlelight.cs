@@ -4,7 +4,6 @@ using Il2CppInterop;
 using Il2CppInterop.Runtime.Injection; 
 using System.Collections;
 using Il2Cpp;
-using UnityEngine.Device;
 using Ini.Parser;
 
 namespace Candlelight
@@ -16,7 +15,6 @@ namespace Candlelight
         public int layerMask = 0;
         public static RaycastHit hit;
         
-
         public override void OnInitializeMelon()
         {
             Candlelight.Settings.OnLoad();
@@ -25,10 +23,15 @@ namespace Candlelight
 
         public override void OnSceneWasLoaded(int buildIndex, string sceneName)
         {
-            if(sceneName.Contains("SANDBOX"))
+            if (sceneName.Contains("MainMenu"))
+            {
+                SaveLoad.reloadPending = true;
+            }
+
+            if (sceneName.Contains("SANDBOX"))
             {
                 SaveLoad.LoadTheCandles();
-            }           
+            }
         }
 
         public override void OnUpdate()
@@ -40,20 +43,13 @@ namespace Candlelight
                     GameObject hitObject = hit.collider.gameObject;
                     string hitObjectName = hitObject.name;
                     
-                    if (hitObjectName == "Body0" || hitObjectName == "Body1" || hitObjectName == "Body2" || hitObjectName == "Body3")
+                    if (hitObjectName.Contains("GEAR_Candle"))
                     {
                         CandleItem thisCandle;
 
-                        if (hitObject.transform.parent.name == "Normal")
-                        {
-                            thisCandle = hitObject.transform.parent.parent.GetComponent<CandleItem>();
-                        }
-                        else
-                        {
-                            return;
-                        }                     
+                        thisCandle = hitObject.transform.GetComponent<CandleItem>();
 
-                        if(thisCandle != null)
+                        if (thisCandle != null)
                         {        
                             PlayerManager currentPlayerManager = GameManager.GetPlayerManagerComponent();
 

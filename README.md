@@ -1,4 +1,4 @@
-The Long Dark - TLD Candlelight - v1.5.5 by Digitalzombie
+The Long Dark - TLD Candlelight - v1.6.0 by Digitalzombie
 ===========================================================
 
 How to install:
@@ -64,6 +64,17 @@ https://discord.gg/AqpW9TjUfr
 
 Changelog:
 ==========
+1.6.0
+- Log message fix
+- Maybe floating flame fix
+- New "endless" option
+- Added wind sensitivity option
+- If set to endless burning, burned down state (visual) is getting randomized on new candles
+- Longer burntime options
+- Light/flame color gets now updated immediately
+- Refactored code A LOT
+- Added crafting icons for candle & wick
+
 1.5.5
 - Added russian localization by TylerSky
 - Added turkish localization by Emre || Elderly

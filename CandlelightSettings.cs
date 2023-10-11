@@ -9,9 +9,18 @@ namespace Candlelight
 		[Section("General")]
 
         [Name("Burntime")]
-        [Description("Burntime in hours - 0 enables unlimited burntime")]
-        [Slider(0, 24)]
+        [Description("Burntime in hours")]
+        [Slider(1, 48)]
         public float burnTime = 8f;
+
+        [Name("Unlimited burntime")]
+        [Description("Endless light")]
+        public bool endless = false;
+
+        [Name("Wind sensitivity")]
+        [Description("Candle extinguishes if wind gets faster than set value - 0 candles stays always on")]
+        [Slider(0f, 30f)]
+        public float windSensitivity = 3f;
 
         [Name("Light intensity")]
 		[Description("Non-Flicker only. Default: 3")]

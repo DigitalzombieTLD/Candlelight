@@ -69,14 +69,14 @@ namespace Candlelight
 
                         candleComponent.burnTime = SaveLoad.GetBurnTime(candleComponent.PID);
 
+                        if(Settings.options.endless)
+                        {
+                            candleComponent.tranformBody(SaveLoad.GetBodyState(candleComponent.PID));
+                        }
+
                         if (SaveLoad.GetLitState(candleComponent.PID) == true)
                         {
                             candleComponent.turnOn(true);
-                        }
-						else
-						{
-                            candleComponent.transformCandle();
-                            candleComponent.turnOff();                            
                         }
                     }
                 }
@@ -116,8 +116,7 @@ namespace Candlelight
 				for (int x = 1; x <= harvestAmount; x++)
 				{
 					for(int y = 1; y<= fatReward; y++)
-					{
-                        //GearItem gearItem = GameManager.GetPlayerManagerComponent().InstantiateItemInPlayerInventory("GEAR_FatRaw", false);					
+					{				
                         GearItem gearItem = Addressables.LoadAssetAsync<GameObject>("GEAR_FatRaw").WaitForCompletion().GetComponent<GearItem>();
 						GameManager.GetPlayerManagerComponent().InstantiateItemInPlayerInventory(gearItem, 1, 1f, InventoryInstantiateFlags.None);
                     
@@ -144,7 +143,6 @@ namespace Candlelight
 
 				if (candleComponent.isLit)
 				{
-                    candleComponent.transformCandle();
                     candleComponent.turnOff();					
 				}
 			}
@@ -161,7 +159,6 @@ namespace Candlelight
 				CandleItem candleComponent = __instance.gameObject.GetComponent<CandleItem>();
 				if (candleComponent)
 				{
-                    candleComponent.transformCandle();
                     candleComponent.turnOff();
 				}
 			}
@@ -180,7 +177,6 @@ namespace Candlelight
                 CandleItem candleComponent = __instance.gameObject.GetComponent<CandleItem>();
                 if (candleComponent)
                 {
-                    candleComponent.transformCandle();
                     candleComponent.turnOff();
                 }
             }
@@ -214,8 +210,6 @@ namespace Candlelight
             return true;
         }
     }
-
-    
 
     [HarmonyLib.HarmonyPatch(typeof(SaveGameSystem), nameof(SaveGameSystem.SaveSceneData))]
     public class SaveCandles
