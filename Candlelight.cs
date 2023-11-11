@@ -35,7 +35,7 @@ namespace Candlelight
         }
 
         public override void OnUpdate()
-        {
+        {           
             if (InputManager.GetKeyDown(InputManager.m_CurrentContext, Settings.options.interactButton) || InputManager.GetKeyDown(InputManager.m_CurrentContext, Settings.options.interactButton2))
             {
                 if (Physics.Raycast(GameManager.GetMainCamera().transform.position, GameManager.GetMainCamera().transform.TransformDirection(Vector3.forward), out hit, 2.5f, layerMask))

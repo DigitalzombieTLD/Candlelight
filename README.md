@@ -1,4 +1,4 @@
-The Long Dark - TLD Candlelight - v1.6.0 by Digitalzombie
+The Long Dark - TLD Candlelight - v1.7.0 by Digitalzombie
 ===========================================================
 
 How to install:
@@ -64,6 +64,18 @@ https://discord.gg/AqpW9TjUfr
 
 Changelog:
 ==========
+1.7.0
+Fixes
+- Fixed shader errors when inspecting
+- Workaround for error when hovering over a stove spot while in placement mode
+- Lit candle allows crafting in the dark again
+- 
+Additions
+- Inspect mode model now the same as ingame model (burned down)
+- Small light tweaks
+- Optional display of remaining burntime on hover text
+
+
 1.6.0
 - Log message fix
 - Maybe floating flame fix

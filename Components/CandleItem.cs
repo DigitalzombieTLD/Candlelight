@@ -16,8 +16,13 @@ namespace Candlelight
 		
 		public GearItem candleGearItem;
 
+        public Inspect inspectThingy;
+        
+
         public List<GameObject> bodyObject = new List<GameObject>();
         public List<Material> bodyMaterial = new List<Material>();
+
+        public List<GameObject> inspectObjects = new List<GameObject>();
 
         public List<GameObject> wickObject = new List<GameObject>();
         public List<Material> wickMaterial = new List<Material>();
@@ -27,12 +32,14 @@ namespace Candlelight
 
         public List<GameObject> smokeObject = new List<GameObject>();
         public List<ParticleSystem> smokeParticle = new List<ParticleSystem>();
+                
 
         public GameObject lightObject;
         public Light light;
         public HeatSource candleHeatComponent;
 		public LightTracking candleLightTrackingComponent;
 		public LightQualitySwitch candleLightQualitySwitch;
+        public MissionIlluminationArea missionIlluminationArea;
 
         public string PID;
         public float burnTime = 0;
@@ -46,7 +53,11 @@ namespace Candlelight
 
 		public void Awake()
 		{
+            //this.transform.parent = GearManager.m_GearCategory.transform;
+            //this.transform.parent = GameObject.Find("Design/Gear").transform;
+
             candleGearItem = this.gameObject.GetComponent<GearItem>();
+            inspectThingy = this.gameObject.GetComponent<Inspect>();
 
             lightObject = this.transform.Find("Lightsource").gameObject;
             light = lightObject.GetComponent<Light>();
@@ -56,6 +67,8 @@ namespace Candlelight
                 bodyObject.Add(this.transform.Find("CandleBody" + candleStates).gameObject);
                 bodyMaterial.Add(bodyObject[candleStates].GetComponent<MeshRenderer>().material);
 
+                inspectObjects.Add(this.transform.Find("CandleInspect" + candleStates).gameObject);
+
                 wickObject.Add(bodyObject[candleStates].transform.Find("Wick").gameObject);
                 wickMaterial.Add(wickObject[candleStates].GetComponent<MeshRenderer>().material);
 
@@ -64,7 +77,13 @@ namespace Candlelight
 
                 smokeObject.Add(bodyObject[candleStates].transform.Find("smokePuff").gameObject);
                 smokeParticle.Add(smokeObject[candleStates].GetComponent<ParticleSystem>());
-            }     
+            }
+          
+            inspectThingy.m_InspectModeMesh = inspectObjects[currentBodyState];
+            inspectThingy.m_NormalMesh = bodyObject[currentBodyState];
+
+            inspectThingy.m_InspectModeMesh.SetActive(false);
+            inspectThingy.m_NormalMesh.SetActive(true);
 
             flickerRandom = UnityEngine.Random.Range(5, 50);
             light.intensity = Settings.options.lightIntensity;
@@ -103,11 +122,24 @@ namespace Candlelight
 
         public void tranformBody(int newState)
         {
+            if(GameManager.GetPlayerManagerComponent().m_InspectModeActive)
+            {
+                if (GameManager.GetPlayerManagerComponent().m_Inspect == inspectThingy)
+                {
+                    return;
+                }
+            }
+           
             if (newState != currentBodyState && newState < 4)
             {
                 bodyObject[currentBodyState].SetActive(false);
                 currentBodyState = newState;
                 bodyObject[currentBodyState].SetActive(true);
+                                
+                inspectThingy.m_NormalMesh = bodyObject[newState];
+                inspectThingy.m_InspectModeMesh.SetActive(false);
+                                
+                inspectThingy.m_InspectModeMesh = inspectObjects[currentBodyState];
                 SaveLoad.SetBodyState(PID, currentBodyState);
             }
 
@@ -125,23 +157,19 @@ namespace Candlelight
 		{
             float burnTimeOptionDivision = Settings.options.burnTime / 4f;
 
-            if (Settings.options.endless)
-            {
-               
-            }
-            else if (burnTime > (burnTimeOptionDivision * 3))
+            if (!Settings.options.endless && (burnTime > (burnTimeOptionDivision * 3)))
             {
                 tranformBody(3);
             }
-            else if (burnTime > (burnTimeOptionDivision * 2))
+            else if (!Settings.options.endless && (burnTime > (burnTimeOptionDivision * 2)))
             {
                 tranformBody(2);
             }
-            else if (burnTime > (burnTimeOptionDivision))
+            else if (!Settings.options.endless && (burnTime > (burnTimeOptionDivision)))
             {
                 tranformBody(1);
             }
-            else if (burnTime >= 0)
+            else if (!Settings.options.endless && (burnTime >= 0))
             {
                 tranformBody(0);
             }
@@ -264,8 +292,15 @@ namespace Candlelight
             bodyMaterial[currentBodyState].SetFloat("_EmissionNoise", 1);
             bodyMaterial[currentBodyState].SetFloat("_EmissionNoise1", 1);
 
-			candleLightTrackingComponent.MaybeAdd(true);      
+			candleLightTrackingComponent.MaybeAdd(true);
             candleLightTrackingComponent.EnableLight(true);
+
+            if (!missionIlluminationArea)
+            {
+                missionIlluminationArea = this.gameObject.AddComponent<MissionIlluminationArea>();
+            }
+
+            missionIlluminationArea.m_Radius = 2.5f;
 
             Heat(true);
 			isLit = true;
@@ -290,6 +325,9 @@ namespace Candlelight
 			{
                 smokeParticle[currentBodyState].Play();
 			}
+
+            MissionIlluminationArea.s_RegisteredIlluminationAreas.Remove(missionIlluminationArea);
+            GameObject.Destroy(missionIlluminationArea);
 
 			SaveLoad.SetLitState(PID, false);
 			flickerCounter = 0;

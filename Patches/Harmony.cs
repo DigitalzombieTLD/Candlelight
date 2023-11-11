@@ -182,32 +182,50 @@ namespace Candlelight
             }
         }
     }
-    
-    [HarmonyLib.HarmonyPatch(typeof(PlayerManager), "MaybeDisableInspectModeMesh")]
-    public class InspectModeMeshDisablePatcher
-    {
-        public static bool Prefix(ref PlayerManager __instance, GearItem gi)
-        {
-            if (gi.name.Contains("GEAR_Candle"))
-            {
-                return false;
-            }
 
-            return true;
+    [HarmonyLib.HarmonyPatch(typeof(GearItem), "GetHoverText")]
+    public class hoverTextPatch
+    {
+        public static void Postfix(ref GearItem __instance, ref string __result)
+        {            
+            if (Settings.options.showBurntimeHover && __instance.name.Contains("GEAR_Candle"))
+            {
+                if (Settings.options.endless)
+                {
+                    __result = __instance.DisplayName + " [∞]";
+                }
+                else
+                {
+                    CandleItem candleComponent = __instance.gameObject.GetComponent<CandleItem>();
+                    if (candleComponent)
+                    {
+                        float remainingHours = Settings.options.burnTime - candleComponent.burnTime;
+
+                        if(remainingHours <= 0.001f)
+                        {
+                            __result = __instance.DisplayName + " [Burned out]";
+                        }
+                        else
+                        {
+                            TimeSpan time = TimeSpan.FromHours(remainingHours);
+                            string str = time.ToString(@"hh\:mm");
+                            __result = __instance.DisplayName + "[" + str + "]";
+                        }                        
+                    }
+                }                      
+            }
         }
     }
-
-    [HarmonyLib.HarmonyPatch(typeof(PlayerManager), "MaybeEnableInspectModeMesh")]
-    public class InspectModeMeshEnablePatcher
+     
+    [HarmonyLib.HarmonyPatch(typeof(PlayerManager), "GetGearPlacePoint")]
+    public class PlacePointHotfixPatch
     {
-        public static bool Prefix(ref PlayerManager __instance, GearItem gi)
+        public static void Postfix(ref PlayerManager __instance, ref GearPlacePoint __result, ref GameObject go, ref Vector3 searchPos)
         {
-            if (gi.name.Contains("GEAR_Candle"))
+            if(__instance.m_ObjectToPlace.name.Contains("GEAR_Candle"))
             {
-                return false;
+                __result = null;
             }
-
-            return true;
         }
     }
 

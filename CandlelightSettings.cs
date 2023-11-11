@@ -13,6 +13,10 @@ namespace Candlelight
         [Slider(1, 48)]
         public float burnTime = 8f;
 
+        [Name("Show burntime")]
+        [Description("Show remaining burntime of candle in hover text")]
+        public bool showBurntimeHover = true;
+
         [Name("Unlimited burntime")]
         [Description("Endless light")]
         public bool endless = false;
