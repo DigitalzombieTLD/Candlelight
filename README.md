@@ -1,4 +1,4 @@
-The Long Dark - TLD Candlelight - v1.7.0 by Digitalzombie
+The Long Dark - TLD Candlelight - v1.8.2 by Digitalzombie
 ===========================================================
 
 How to install:
@@ -64,6 +64,10 @@ https://discord.gg/AqpW9TjUfr
 
 Changelog:
 ==========
+1.8.2
+- TLD 2.29 fix
+- Save/Load of on/off state maybe fixed too now
+
 1.7.0
 Fixes
 - Fixed shader errors when inspecting
