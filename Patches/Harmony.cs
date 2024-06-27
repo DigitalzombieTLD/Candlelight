@@ -89,9 +89,13 @@ namespace Candlelight
 	{
 		public static void Postfix(ref Panel_BodyHarvest __instance)
 		{
+            MelonLogger.Msg("Harvesting fat");
 			GearItem thisHide = __instance.m_BodyHarvest.m_HidePrefab.GetComponent<GearItem>();
-			float harvestAmount = __instance.m_MenuItem_Hide.m_HarvestAmount;
-			int fatReward = 0;
+
+            //float harvestAmount = __instance.m_MenuItem_Hide.m_HarvestAmount;
+            float harvestAmount = __instance.m_MenuItem_Hide.HarvestUnits;    
+
+            int fatReward = 0;
 			bool msgAdded = false;
 
 			if (harvestAmount>0)
@@ -222,7 +226,7 @@ namespace Candlelight
     {
         public static void Postfix(ref PlayerManager __instance, ref GearPlacePoint __result, ref GameObject go, ref Vector3 searchPos)
         {
-            if(__instance.m_ObjectToPlace.name.Contains("GEAR_Candle"))
+            if(__instance.m_ObjectToPlace && __instance.m_ObjectToPlace.name.Contains("GEAR_Candle"))
             {
                 __result = null;
             }

@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using ModSettings;
+using Il2CppMono;
 
 namespace Candlelight
 {
@@ -99,7 +100,9 @@ namespace Candlelight
             base.OnConfirm();
 			Candlelight_Main.candleLightColor = new Color(colorLightRed, colorLightGreen, colorLightBlue);
 			Candlelight_Main.candleFlameColor = new Color(colorFlameRed, colorFlameGreen, colorFlameBlue);
-		}
+			Candlelight_Main.currentBurntimeSetting = burnTime;
+            Candlelight_Main.isEndless = endless;
+        }
     }
 
     internal static class Settings
@@ -112,6 +115,9 @@ namespace Candlelight
             options.AddToModSettings("Candlelight Settings");
 			Candlelight_Main.candleLightColor = new Color(Settings.options.colorLightRed, Settings.options.colorLightGreen, Settings.options.colorLightBlue);
 			Candlelight_Main.candleFlameColor = new Color(Settings.options.colorFlameRed, Settings.options.colorFlameGreen, Settings.options.colorFlameBlue);
-		}
+
+            Candlelight_Main.currentBurntimeSetting = Settings.options.burnTime;
+            Candlelight_Main.isEndless = Settings.options.endless;
+        }
     }
 }

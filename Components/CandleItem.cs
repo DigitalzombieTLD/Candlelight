@@ -13,8 +13,10 @@ namespace Candlelight
         public CandleItem(IntPtr intPtr) : base(intPtr)
         {
         }
-		
-		public GearItem candleGearItem;
+
+        public float burnTime = 0;
+
+        public GearItem candleGearItem;
 
         public Inspect inspectThingy;
         
@@ -42,7 +44,7 @@ namespace Candlelight
         public MissionIlluminationArea missionIlluminationArea;
 
         public string PID;
-        public float burnTime = 0;
+        
         public int flickerRandom = 30;
         public int flickerCounter = 0;
         public int currentBodyState = 0; // 0 = full
@@ -94,6 +96,7 @@ namespace Candlelight
             if (candleLightTrackingComponent == null)
             {
                 candleLightTrackingComponent = lightObject.AddComponent<LightTracking>();
+                candleLightTrackingComponent.m_LightComponent = light;
             }
 
             candleLightQualitySwitch = lightObject.GetComponent<LightQualitySwitch>();
@@ -101,6 +104,7 @@ namespace Candlelight
             if (candleLightQualitySwitch == null)
             {
                 candleLightQualitySwitch = lightObject.AddComponent<LightQualitySwitch>();
+                candleLightQualitySwitch.m_Light = light;
             }
 
             candleHeatComponent = lightObject.GetComponent<HeatSource>();

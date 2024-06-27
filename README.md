@@ -69,7 +69,7 @@ Fixes
 - Fixed shader errors when inspecting
 - Workaround for error when hovering over a stove spot while in placement mode
 - Lit candle allows crafting in the dark again
-- 
+
 Additions
 - Inspect mode model now the same as ingame model (burned down)
 - Small light tweaks

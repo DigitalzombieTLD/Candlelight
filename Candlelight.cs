@@ -5,6 +5,8 @@ using Il2CppInterop.Runtime.Injection;
 using System.Collections;
 using Il2Cpp;
 using Ini.Parser;
+using static Il2Cpp.PlayerManager;
+using UnityEngine.AddressableAssets;
 
 namespace Candlelight
 {
@@ -14,7 +16,10 @@ namespace Candlelight
         public static Color candleFlameColor = new Color(0f, 0f, 0f);
         public int layerMask = 0;
         public static RaycastHit hit;
-        
+        public static float currentBurntimeSetting = 0f;
+        public static bool isEndless = false;
+
+
         public override void OnInitializeMelon()
         {
             Candlelight.Settings.OnLoad();
@@ -28,14 +33,14 @@ namespace Candlelight
                 SaveLoad.reloadPending = true;
             }
 
-            if (sceneName.Contains("SANDBOX"))
+            if ((!sceneName.Contains("Empty") && !sceneName.Contains("Boot") && !sceneName.Contains("MainMenu")))
             {
                 SaveLoad.LoadTheCandles();
             }
         }
 
         public override void OnUpdate()
-        {           
+        {
             if (InputManager.GetKeyDown(InputManager.m_CurrentContext, Settings.options.interactButton) || InputManager.GetKeyDown(InputManager.m_CurrentContext, Settings.options.interactButton2))
             {
                 if (Physics.Raycast(GameManager.GetMainCamera().transform.position, GameManager.GetMainCamera().transform.TransformDirection(Vector3.forward), out hit, 2.5f, layerMask))

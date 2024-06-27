@@ -53,6 +53,9 @@
         <Reference Include="Il2CppInterop.Runtime">
           <HintPath>W:\Steam\steamapps\common\TheLongDark\MelonLoader\net6\Il2CppInterop.Runtime.dll</HintPath>
         </Reference>
+        <Reference Include="Il2CppTLD.IntBackedUnit">
+          <HintPath>..\..\..\..\Steam\steamapps\common\TheLongDark\MelonLoader\Il2CppAssemblies\Il2CppTLD.IntBackedUnit.dll</HintPath>
+        </Reference>
         <Reference Include="MelonLoader" />
         <Reference Include="0Harmony" />
         <Reference Include="Assembly-CSharp" />

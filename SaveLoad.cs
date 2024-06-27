@@ -79,20 +79,41 @@ namespace Candlelight
 
         public static void SetBurnTime(string candleID, float burnTime)
         {
-            thisIniData[candleID].AddKey("burnTime");
-            thisIniData[candleID]["burnTime"] = burnTime.ToString();
+            if (thisIniData == null)
+            {
+              
+            }
+            else
+            {
+                thisIniData[candleID].AddKey("burnTime");
+                thisIniData[candleID]["burnTime"] = burnTime.ToString();
+            }     
         }
 
         public static void SetLitState(string candleID, bool litState)
-        {            
-            thisIniData[candleID].AddKey("isLit");
-            thisIniData[candleID]["isLit"] = litState.ToString();
+        {  
+            if(thisIniData == null)
+            {
+
+            }
+            else
+            {
+                thisIniData[candleID].AddKey("isLit");
+                thisIniData[candleID]["isLit"] = litState.ToString();
+            }            
         }
 
         public static void SetBodyState(string candleID, int bodyState)
         {
-            thisIniData[candleID].AddKey("bodyState");
-            thisIniData[candleID]["bodyState"] = bodyState.ToString();
+            if (thisIniData == null)
+            {
+
+            }
+            else
+            {
+                thisIniData[candleID].AddKey("bodyState");
+                thisIniData[candleID]["bodyState"] = bodyState.ToString();
+            }            
         }
 
         public static void SaveTheCandles()
