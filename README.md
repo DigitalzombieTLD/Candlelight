@@ -39,13 +39,20 @@ Everything can spawn as loot.
 
 Candles are very sensible to wind and turn off easily. 
 
-Turn on by holding a burning match/flare/torch and click the candle with the left or middle (AlternativeAction setting) mouse button.
-Turn on by holding an unlit match and hold left or middle (AlternativeAction setting) mouse button while targetting the candle.
-Turn off by left or middle (AlternativeAction setting) mouse button.
-
 Flickering effect can be disabled in the mod settings. There are additional options for customizations.
 
 Candle gives +2°C warmth while burning. Crafting and reading is possible.
+
+How to use candles
+=================
+
+Light a candle by placing the candle and then holding a burning match/flare/torch and click the candle with the left or middle (AlternativeAction setting) mouse button. The key binding used to light the candle can be changed in mod settings.
+
+Turn off a candle by targeting the candle and clicking the same button used to light it.
+
+You can also light a torch from a lit candle by holding the torch in your hand then targeting the candle and clicking the same button used to light it. You cannot light a candle from another candle, so if you want to light a new candle you will need to place it down and then light a torch from an already lit candle and then use that torch to light the new candle.
+
+You can right click on a candle to move it around. If the candle is lit it will stay lit while you're moving it. If you pick up a lit candle and put it in your inventory then it will immediately go out.
 
 ===========================
 ===========================
