@@ -146,15 +146,6 @@ namespace Candlelight
                 inspectThingy.m_InspectModeMesh = inspectObjects[currentBodyState];
                 SaveLoad.SetBodyState(PID, currentBodyState);
             }
-
-            if (isLit)
-            {
-                turnOn(false);
-            }
-            else
-            {
-                turnOff();
-            }
         }	
 
 		public void Update()
@@ -222,12 +213,7 @@ namespace Candlelight
                 }
 
                 if (Settings.options.enableFlicker)
-                {
-                    if (flickerCounter < flickerRandom)
-                    {
-                        flickerCounter++;
-                    }
-
+                {                    
                     Flicker();
                 }
             }
@@ -237,9 +223,10 @@ namespace Candlelight
 		{
 			float flickerFPS;
 
-			if(flickerCounter<flickerRandom)
-			{				
-				return;
+            if (flickerCounter<flickerRandom)
+			{
+                flickerCounter++;
+                return;
 			}
 
 			if (GameManager.GetWeatherComponent().IsIndoorEnvironment())
@@ -256,7 +243,7 @@ namespace Candlelight
 			int y = x % flickerPattern.Length;
 			float intensity = (flickerPattern[y] - 'a') / (float)('m' - 'a');
 			light.intensity = intensity * Settings.options.flickerMaxIntensity;
-		}		
+        }		
 
 		public void turnOn(bool onLoad)
 		{
