@@ -64,6 +64,9 @@ https://discord.gg/AqpW9TjUfr
 
 Changelog:
 ==========
+1.9.1
+- yeeaaah yeaaah
+
 1.9.0
 - TLD 2.35 update
 - Vanilla fat integration
