@@ -31,7 +31,7 @@ Adds candles and materials for crafting candles
 New items:
 
 - GEAR_Wick -> 1 cloth = 4 wicks
-- GEAR_FatRaw -> Can be obtained by harvesting hide/pelt from carcasses, needs to be boiled to get:
+- GEAR_FatRaw (modded) or GEAR_AnimalFat_-> Can be obtained by harvesting meat from carcasses, needs to be crafted to get:
 - GEAR_Wax -> 4 pieces of tallow + 1 wick can be crafted into: 
 - GEAR_Candle -> Burns for 8 hours (default, adjustable)
 
@@ -64,6 +64,11 @@ https://discord.gg/AqpW9TjUfr
 
 Changelog:
 ==========
+1.9.0
+- TLD 2.35 update
+- Vanilla fat integration
+- Everything in crafting menu now
+
 1.8.2
 - TLD 2.29 fix
 - Save/Load of on/off state maybe fixed too now

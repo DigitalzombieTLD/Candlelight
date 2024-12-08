@@ -84,58 +84,6 @@ namespace Candlelight
         }
     }
 
-    [HarmonyLib.HarmonyPatch(typeof(Panel_BodyHarvest), "TransferHideFromCarcassToInventory")]
-	public class harvestFatPatcher
-	{
-		public static void Postfix(ref Panel_BodyHarvest __instance)
-		{
-            MelonLogger.Msg("Harvesting fat");
-			GearItem thisHide = __instance.m_BodyHarvest.m_HidePrefab.GetComponent<GearItem>();
-
-            //float harvestAmount = __instance.m_MenuItem_Hide.m_HarvestAmount;
-            float harvestAmount = __instance.m_MenuItem_Hide.HarvestUnits;    
-
-            int fatReward = 0;
-			bool msgAdded = false;
-
-			if (harvestAmount>0)
-			{				
-				if (thisHide.name.Contains("GEAR_RabbitPelt"))
-				{
-					fatReward = 1;
-				}
-				else if (thisHide.name.Contains("GEAR_WolfPelt")|| thisHide.name.Contains("GEAR_LeatherHide"))
-				{
-					fatReward = 3;
-				}
-				else if (thisHide.name.Contains("GEAR_BearHide"))
-				{
-					fatReward = 5;
-				}
-				else if (thisHide.name.Contains("GEAR_MooseHide"))
-				{
-					fatReward = 7;
-				}
-
-				for (int x = 1; x <= harvestAmount; x++)
-				{
-					for(int y = 1; y<= fatReward; y++)
-					{				
-                        GearItem gearItem = Addressables.LoadAssetAsync<GameObject>("GEAR_FatRaw").WaitForCompletion().GetComponent<GearItem>();
-						GameManager.GetPlayerManagerComponent().InstantiateItemInPlayerInventory(gearItem, 1, 1f, InventoryInstantiateFlags.None);
-                    
-						if (!msgAdded)
-						{
-							msgAdded = true;
-							string message = string.Concat(new object[]	{ gearItem.DisplayName,	" (", fatReward, ")"});
-							GearMessage.AddMessage(gearItem.name, Localization.Get("GAMEPLAY_Harvested"), message, false, true);
-						}
-					}
-				}				
-			}		
-		}
-	}
-
 	[HarmonyLib.HarmonyPatch(typeof(PlayerManager), "AddItemToPlayerInventory")]
 	public class candleTurnOffOnStow
 	{
